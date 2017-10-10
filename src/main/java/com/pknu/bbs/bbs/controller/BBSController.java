@@ -1,10 +1,9 @@
 package com.pknu.bbs.bbs.controller;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -15,15 +14,17 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.pknu.bbs.bbs.dto.BBSDto;
-import com.pknu.bbs.bbs.dto.UploadDto;
 import com.pknu.bbs.bbs.join.BBSJoin;
 import com.pknu.bbs.bbs.login.BBSLogin;
 import com.pknu.bbs.bbs.reply.BBSReply;
@@ -82,8 +83,9 @@ public class BBSController {
 		return "writeForm";
 	}
 //	value값은 method를 요청하지 않을 경우 굳이 안써도 된다
+	@Transactional(readOnly=false)
 	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
-	public String write(/*HttpServletRequest req*/BBSDto article, HttpSession session, UploadDto uploadDto, BindingResult result) {
+	public String write(BBSDto article, HttpSession session, /*UploadDto uploadDto, */BindingResult result, MultipartHttpServletRequest mphsr) {
 //		매개변수로 DTO를 받아오면  Spring에서는 저절로 jsp에 있는 값중 DTO에 있는 파라미터와 일치하는 값이 저절로 DTO 안에 값이 넣어진체 넘어온다. 		
 		System.out.println(article);
 		article.setId((String)session.getAttribute("id"));
@@ -94,16 +96,62 @@ public class BBSController {
 			}
 			return "writeForm";
 		}
+		List<MultipartFile> mf = mphsr.getFiles("fileData");
 		
+		if(mf.size() == 1&& mf.get(0).getOriginalFilename().equals("")) {
+			try {
+				bbswrite.write(article);
+			} catch (ServletException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			article.setFileStatus(1);
+			try {
+				bbswrite.write(article);
+			for(int i =0; i<mf.size(); i++) {
+				String articleNum = String.valueOf(article.getArticleNum());
+					String uuid = UUID.randomUUID().toString();
+					
+					String originFname = mf.get(i).getOriginalFilename();
+					String storedFname = uuid + "_" + originFname;
+					
+					String savePath = fileSystemResource.getPath()+storedFname;
+					
+					long fileSize = mf.get(i).getSize();
+					
+					try {
+						mf.get(i).transferTo(new File(savePath));
+					} catch (IllegalStateException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+					bbswrite.fileUpload(originFname, storedFname, fileSize, articleNum);
+		}
+			} catch (ServletException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
+		}
+/*
 		if(!uploadDto.getFileData().isEmpty()) {
 			String originFname = uploadDto.getFileData().getOriginalFilename();
-			/*String imgExt = originFname.substring(originFname.lastIndexOf(".") + 1, originFname.length());*/
-			/*System.out.println(originFname);
-			System.out.println(System.currentTimeMillis());*/
-			/*for (int i=0;i<10;i++){
+			String imgExt = originFname.substring(originFname.lastIndexOf(".") + 1, originFname.length());
+			System.out.println(originFname);
+			System.out.println(System.currentTimeMillis());
+			for (int i=0;i<10;i++){
 	            System.out.println(UUID.randomUUID().toString());
 //	            System.out.println(UUID.randomUUID().toString().replace("-", ""));
-	        }*/
+	        }
 			try {
 				String uuid = UUID.randomUUID().toString();
 				String storedFname = uuid + "_" + originFname;
@@ -127,8 +175,8 @@ public class BBSController {
 			article.setFileStatus(1);
 			bbswrite.writeUpload(article,uploadDto);
 		}else {
-		/*
-		*/
+		
+		
 		
 		try {
 			bbswrite.write(article);
@@ -140,10 +188,10 @@ public class BBSController {
 			e.printStackTrace();
 		}
 		
-		/*
-		*/
-		}//else end
 		
+		
+		}//else end
+		*/
 		return "redirect:list.bbs?pageNum=1";
 	}
 	@RequestMapping(value="/download.bbs")

@@ -8,9 +8,11 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.pknu.bbs.bbs.dto.BBSDto;
 import com.pknu.bbs.bbs.dto.UploadDto;
-
+@Transactional
 public interface BBSDao {
 
 	int getTotalCount();
@@ -18,7 +20,7 @@ public interface BBSDao {
 	List<BBSDto> getArticleList(HashMap<Object, Object> paramMap) throws SQLException;
 	
 	BBSDto getContent(String articleNum) throws SQLException;
-	
+	@Transactional
 	void write(BBSDto article) throws ServletException, IOException;
 	
 	void join(HashMap<Object,Object> paramMap);
@@ -47,5 +49,7 @@ public interface BBSDao {
 	List<UploadDto> getFileStatus(String articleNum);
 
 	UploadDto getDownloadStatus(String fname);
+	@Transactional
+	void fileUpload(HashMap<String, Object> hm);
 
 }

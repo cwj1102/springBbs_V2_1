@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -30,7 +31,7 @@
 		  <td colspan="2"> <textarea style="width:100%" rows="20" name="content" ></textarea></td>
 	    </tr> 	    
 	    <tr>
-	      <td>첨부 : </td><td><input type="file" id="fileData" name="fileData"></td>
+	      <td>첨부 : </td><td><input type="file" id="fileData" multiple="multiple" name="fileData"></td>
 	    </tr>
 	    <tr>
 	      <td><input type="submit" value="글쓰기"></td>

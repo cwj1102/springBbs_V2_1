@@ -2,8 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="propertyConfigurer"
@@ -11,13 +14,23 @@
 		<property name="location" value="classpath:db.properties" />
 	</bean>
 
-	<bean id="dataSource"
+	<bean id="dataSourceSpied"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${driverClassName}" />
 		<property name="url" value="${url}" />
 		<property name="username" value="${username}" />
 		<property name="password" value="${password}" />
 	</bean>
+
+<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+	<constructor-arg ref="dataSourceSpied" />
+	<property name="logFormatter">
+		<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+			<property name="loggingType" value="MULTI_LINE" />
+			<property name="sqlPrefix" value="SQL:::" />
+		</bean>
+	</property>
+</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -56,6 +69,12 @@
 			<value>d:/uploadKch/</value>
 		</constructor-arg>
 	</bean>
+	
+<!-- Transaction Manager --> 
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+	<property name="dataSource" ref="dataSource" /> 
+</bean> 
+<tx:annotation-driven transaction-manager="transactionManager" />
 
 
 </beans>

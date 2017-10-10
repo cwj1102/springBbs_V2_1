@@ -25,12 +25,19 @@
 	</select>
     <insert id="write">
         INSERT INTO BBS1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},0,0,0,sysdate,#{fileStatus})
+        <selectKey keyProperty="articleNum" resultType="Integer" order="AFTER"> 
+        	SELECT BBS1_SEQ.currval FROM dual 
+        </selectKey>
     </insert>
     <insert id="writeUpload" parameterType="HashMap">
     insert all
 	into bbs1 values(BBS1_SEQ.NEXTVAL,#{article.id},#{article.title},#{article.content},0,0,0,sysdate,#{article.fileStatus})
 	into FILELIST values(file_seq.nextval,#{uploadDto.originFname},#{uploadDto.storedFname},#{uploadDto.fileLength},BBS1_SEQ.currval)
 	select * from dual
+    </insert>
+    <insert id="fileUpload" parameterType="HashMap">
+    	INSERT INTO
+    	FILELIST values(file_seq.nextval,#{originFname},#{storedFname},#{fileSize},#{articleNum})
     </insert>
     <select id="getContent" parameterType="String" resultType="article">
 			SELECT articleNum, id, title, content, depth, 

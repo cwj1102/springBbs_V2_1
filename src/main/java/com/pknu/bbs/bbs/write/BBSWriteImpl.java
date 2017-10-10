@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pknu.bbs.bbs.dao.BBSDao;
 import com.pknu.bbs.bbs.dto.BBSDto;
@@ -20,6 +21,9 @@ public class BBSWriteImpl implements BBSWrite {
 //	@Resource(name="saveDir") //type이 String인 빈을 DI해준다 그중에서 id->name->class 순으로 "pageSize"인 녀석을 DI한다.
 //	String saveDir;
 //	
+	
+	@Override
+	@Transactional(readOnly = false)
 	public String write(BBSDto article) throws ServletException, IOException {
 		System.out.println(article);
 /*		req.setCharacterEncoding("UTF-8");
@@ -68,6 +72,19 @@ public class BBSWriteImpl implements BBSWrite {
 		bbsdao.writeUpload(hm);
 		return "/list.bbs?pageNum=1";
 	}
+	@Transactional(readOnly = false)
+	@Override
+	public void fileUpload(String originFname, String storedFname, long fileSize, String articleNum) {
+		HashMap<String, Object> hm = new HashMap<>();
+		hm.put("originFname", originFname);
+		hm.put("storedFname", storedFname);
+		hm.put("fileSize", fileSize);
+		hm.put("articleNum", articleNum);
+		
+		bbsdao.fileUpload(hm);
+	}
+	
+	
 	
 	/*private String getFileName(Part filePart) {
 		String originFname = null;
