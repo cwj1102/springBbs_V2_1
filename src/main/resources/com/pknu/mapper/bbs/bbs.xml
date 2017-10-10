@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mybatis map 선언표시 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pknu.bbs.bbs.dao.BBSDao">
+    <select id="getTotalCount" resultType="int">
+		select count(*) from bbs1
+	</select>
+
+    <select id="getArticleList" parameterType="HashMap" resultType="article">
+		SELECT articleNum, id, title, depth, hit, to_char(writeDate,'YYYY-MM-DD') as writeDate
+		FROM (SELECT ROWNUM RM, human.*
+			  FROM (SELECT * FROM bbs1
+			  		START WITH groupId=0
+			  		CONNECT BY PRIOR articleNum = groupId
+			  		ORDER SIBLINGS BY articleNum desc) human)
+		WHERE RM BETWEEN #{startRow} and #{endRow} 
+	</select>
+	<select id="getFileStatus" parameterType="String" resultType="com.pknu.bbs.bbs.dto.UploadDto">
+		SELECT * FROM filelist where articleNum = #{articleNum}
+	</select>
+    <select id="loginCheck" parameterType="String" resultType="String">
+		SELECT PASS FROM LOGIN WHERE ID=#{id}
+	</select>
+    <insert id="write">
+        INSERT INTO BBS1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},0,0,0,sysdate,#{fileStatus})
+    </insert>
+    <insert id="writeUpload" parameterType="HashMap">
+    insert all
+	into bbs1 values(BBS1_SEQ.NEXTVAL,#{article.id},#{article.title},#{article.content},0,0,0,sysdate,#{article.fileStatus})
+	into FILELIST values(file_seq.nextval,#{uploadDto.originFname},#{uploadDto.storedFname},#{uploadDto.fileLength},BBS1_SEQ.currval)
+	select * from dual
+    </insert>
+    <select id="getContent" parameterType="String" resultType="article">
+			SELECT articleNum, id, title, content, depth, 
+				   hit, groupId, writeDate, fileStatus 
+			FROM bbs1 
+			WHERE articleNum=#{articleNum}
+	</select>
+<!-- 	<select id="getContent" parameterType="String" resultType="article"> -->
+<!-- 			SELECT * -->
+<!-- 			FROM bbs  -->
+<!-- 			WHERE article_num=#{articleNum} -->
+<!-- 	</select> -->
+<!--     <update id="posUpdate" parameterType="article"> -->
+<!--         update bbs1 set pos = pos + 1 where pos > #{pos} and group_id = #{groupId} -->
+<!--     </update> -->
+    <insert id="reply" parameterType="article">
+        insert into bbs1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},#{depth} + 1,0,#{articleNum},sysdate,#{fileStatus})
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        delete from bbs1 where articleNum = #{articleNum}
+    </delete>
+    <select id="getUpdateArticle" parameterType="String" resultType="article">
+		SELECT TITLE, CONTENT, ARTICLENUM FROM BBS1 WHERE ARTICLENUM=#{articleNum}
+		</select>
+    <update id="updateArticle" parameterType="HashMap">
+        update bbs1 set title = #{title}, content = #{content} where articleNum = #{articleNum}
+    </update>
+
+    <select id="joinCheck" parameterType="String" resultType="String">
+		select id from login where id = #{id}
+	</select>
+    <insert id="join">
+        insert into login values(#{id},#{pass})
+    </insert>
+    
+    <select id="commentsCount" parameterType="Integer" resultType="Integer">
+    	select count(*) from comments1 where articlenum = #{articleNum}
+    </select>
+    
+    <select id="getDownloadStatus" parameterType="String" resultType="com.pknu.bbs.bbs.dto.UploadDto">
+    		select * from FILELIST where storedFname=#{storedFname}
+    </select>
+</mapper>

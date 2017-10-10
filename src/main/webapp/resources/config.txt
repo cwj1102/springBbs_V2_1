@@ -1,0 +1,44 @@
+  CREATE TABLE "BBS1" 
+   (articleNum NUMBER primary key, 
+	id VARCHAR2(200 BYTE) NOT NULL, 
+	title VARCHAR2(200 BYTE) NOT NULL, 
+	content CLOB NOT NULL, 
+	depth NUMBER NOT NULL, 
+	hit NUMBER NOT NULL, 
+	groupId NUMBER NOT NULL, 
+	writeDate DATE NOT NULL, 
+	fileStatus number(1) not null);
+    
+    
+    create sequence bbs1_seq
+    start with 1
+    increment by 1;
+    
+    
+    create table comments1(
+    commentNum number primary key,
+    id varchar2(200) not null,
+    commentContent varchar(2000) not null,
+    commentDate date not null,
+    articleNum number not null,
+    
+    CONSTRAINT comment1_fk FOREIGN KEY(articleNum)
+        REFERENCES bbs1 (articleNum) ON DELETE CASCADE);
+        
+CREATE SEQUENCE comment1_seq
+start with 1
+increment by 1;
+
+create table filelist(
+fileNum number primary key,
+originfname varchar2(400) not null,
+storedfname varchar2(400) not null,
+filelength number not null,
+articleNum number not null,
+
+CONSTRAINT filefk FOREIGN KEY(articleNum)
+    REFERENCES bbs1(articleNum) ON DELETE CASCADE);
+    
+create sequence file_seq
+start with 1
+increment by 1;

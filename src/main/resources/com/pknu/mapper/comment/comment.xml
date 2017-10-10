@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mybatis map 선언표시 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pknu.bbs.comment.dao.CommentDao">
+<!--     <select id="commentsCount" parameterType="Integer" resultType="Integer">
+    	select count(*) from comments where articlenum = #{articleNum}
+    </select> -->
+    
+    <insert id="insertComment" parameterType="comment">
+    	insert into comments1 values(comment1_seq.nextval,#{id},#{commentContent},sysdate,#{articleNum})
+    </insert>
+    
+    
+    
+    <select id="getComments" parameterType="HashMap" resultType="comment">
+    	<!-- select ocom.* 
+		from (select rownum rum, icom.* 
+			  from (select * from comments) icom 
+			  where articleNum = #{articleNum} 
+			  order by rum) ocom 
+		where rum between 1 and #{commentRow} --> 
+		select * 
+		from (select * from comments1  
+			  where articleNum = #{articleNum} 
+			  order by commentNum desc) 
+		where rownum between 1 and #{commentRow}
+    </select>
+</mapper>
