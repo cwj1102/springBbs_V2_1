@@ -139,59 +139,7 @@ public class BBSController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-
 		}
-/*
-		if(!uploadDto.getFileData().isEmpty()) {
-			String originFname = uploadDto.getFileData().getOriginalFilename();
-			String imgExt = originFname.substring(originFname.lastIndexOf(".") + 1, originFname.length());
-			System.out.println(originFname);
-			System.out.println(System.currentTimeMillis());
-			for (int i=0;i<10;i++){
-	            System.out.println(UUID.randomUUID().toString());
-//	            System.out.println(UUID.randomUUID().toString().replace("-", ""));
-	        }
-			try {
-				String uuid = UUID.randomUUID().toString();
-				String storedFname = uuid + "_" + originFname;
-				
-				uploadDto.setFileLength(uploadDto.getFileData().getSize());
-				uploadDto.setOriginFname(originFname);
-				uploadDto.setStoredFname(storedFname);
-				
-				byte[] bytes = uploadDto.getFileData().getBytes();
-				File outFileName = new File(fileSystemResource.getPath()+storedFname);
-				System.out.println(outFileName);
-				FileOutputStream fos = new FileOutputStream(outFileName);
-				BufferedOutputStream bos = new BufferedOutputStream(fos);
-				bos.write(bytes);
-				bos.close();
-				fos.close();
-			} catch (IOException e) {
-				System.err.println("File writing error!");
-			}
-			System.err.println("File upload success!");
-			article.setFileStatus(1);
-			bbswrite.writeUpload(article,uploadDto);
-		}else {
-		
-		
-		
-		try {
-			bbswrite.write(article);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-		}//else end
-		*/
 		return "redirect:list.bbs?pageNum=1";
 	}
 	@RequestMapping(value="/download.bbs")

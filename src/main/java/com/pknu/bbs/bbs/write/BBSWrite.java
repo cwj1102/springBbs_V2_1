@@ -10,7 +10,5 @@ import com.pknu.bbs.bbs.dto.UploadDto;
 public interface BBSWrite {
 	String write(BBSDto article) throws ServletException, IOException;
 
-	String writeUpload(BBSDto article, UploadDto uploadDto);
-
 	void fileUpload(String originFname, String storedFname, long fileSize, String articleNum);
 }
