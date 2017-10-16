@@ -45,20 +45,17 @@
 			FROM bbs1 
 			WHERE articleNum=#{articleNum}
 	</select>
-<!-- 	<select id="getContent" parameterType="String" resultType="article"> -->
-<!-- 			SELECT * -->
-<!-- 			FROM bbs  -->
-<!-- 			WHERE article_num=#{articleNum} -->
-<!-- 	</select> -->
-<!--     <update id="posUpdate" parameterType="article"> -->
-<!--         update bbs1 set pos = pos + 1 where pos > #{pos} and group_id = #{groupId} -->
-<!--     </update> -->
     <insert id="reply" parameterType="article">
-        insert into bbs1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},#{depth} + 1,0,#{articleNum},sysdate,#{fileStatus})
+        insert into bbs1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},#{depth} + 1,0,#{groupId},sysdate,#{fileStatus})
     </insert>
 
     <delete id="delete" parameterType="String">
-        delete from bbs1 where articleNum = #{articleNum}
+        delete from bbs1
+        where articleNum in(
+        select articleNum
+        from bbs1
+        start with articleNum = #{articleNum}
+        connect by prior articleNum = groupId)
     </delete>
     <select id="getUpdateArticle" parameterType="String" resultType="article">
 		SELECT TITLE, CONTENT, ARTICLENUM FROM BBS1 WHERE ARTICLENUM=#{articleNum}
