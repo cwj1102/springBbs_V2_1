@@ -21,7 +21,7 @@ public interface BBSDao {
 	
 	BBSDto getContent(String articleNum) throws SQLException;
 	@Transactional
-	void write(BBSDto article) throws ServletException, IOException;
+	void write(BBSDto article);
 	
 	void join(HashMap<Object,Object> paramMap);
 	
@@ -49,7 +49,13 @@ public interface BBSDao {
 	List<UploadDto> getFileStatus(String articleNum);
 
 	UploadDto getDownloadStatus(String fname);
-	@Transactional
-	void fileUpload(HashMap<String, Object> hm);
+	/*@Transactional
+	void fileUpload(HashMap<String, Object> hm);*/
+
+	int getNextArticleNum();
+
+	void insertFile(UploadDto uploadDto);
+
+	void write1(BBSDto article);
 
 }

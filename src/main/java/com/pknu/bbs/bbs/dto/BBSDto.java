@@ -13,7 +13,7 @@ public class BBSDto {
 	private int hit;
 	private int groupId;
 	private String writeDate;
-	private int fileStatus;
+	private byte fileStatus;
 	private long commentCount;
 	public int getArticleNum() {
 		return articleNum;
@@ -63,10 +63,10 @@ public class BBSDto {
 	public void setWriteDate(String writeDate) {
 		this.writeDate = writeDate;
 	}
-	public int getFileStatus() {
+	public byte getFileStatus() {
 		return fileStatus;
 	}
-	public void setFileStatus(int fileStatus) {
+	public void setFileStatus(byte fileStatus) {
 		this.fileStatus = fileStatus;
 	}
 	public long getCommentCount() {

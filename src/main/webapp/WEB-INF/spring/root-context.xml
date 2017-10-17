@@ -59,15 +59,16 @@
 	<bean id="pageBlock" class="java.lang.Integer">
 		<constructor-arg value="10"></constructor-arg>
 	</bean>
-
+<!-- 	id가 무조건 "multipartResolver"여야 한다. Resolver가  파일로 받아준다.-->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="20000000" />
 	</bean>
-	<bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource">
-		<constructor-arg>
-			<value>d:/uploadKch/</value>
-		</constructor-arg>
+<!-- 	<bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource"> -->
+<!-- 		<constructor-arg value="d://uploadKch//"/> -->
+<!-- 	</bean> -->
+	<bean id="saveDir" class="java.lang.String">
+		<constructor-arg value="d://uploadKch//"/>
 	</bean>
 	
 <!-- Transaction Manager --> 

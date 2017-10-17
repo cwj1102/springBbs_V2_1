@@ -1,10 +1,8 @@
 package com.pknu.bbs.bbs.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,17 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+<<<<<<< HEAD
+=======
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+>>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.pknu.bbs.bbs.dto.BBSDto;
 import com.pknu.bbs.bbs.join.BBSJoin;
@@ -43,19 +43,38 @@ public class BBSController {
 	@Autowired
 	private BBSWrite bbswrite;
 	
+	
 	@Autowired
 	private BBSJoin bbsjoin;
 	
 	@Autowired
 	private BBSReply bbsreply;
 	
+<<<<<<< HEAD
+//	@Autowired
+//	private FileSystemResource fileSystemResource;
+=======
 	@Autowired
 	private FileSystemResource fileSystemResource;
-	
+>>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
+	/*
+	 * @ModelAttribute는 파라미터 이름을 반드시 적어주자
+	 * 그러면 객체가 아니고 프리미티브 타입이 와도 됨
+	 * public String list(@ModelAttribute("pageNum") String pageNum, Model model){
+	 * public String list(@ModelAttribute("pageNum") int pageNum, Model model){
+	 * 아래코드는 에러가 남... 파라미터 이름을 생략하면 int를 객체로 생성할려고 해서 에러가 남
+	 * public String list(@ModelAttribute int pageNum, Model model){
+	 * 아래코드는 객체를 생성할려고 하는데  String 이니까 에러는 안나지만... 파라미터가 안넘어옴
+	 * public String list(@ModelAttribute String pageNum, Model model){
+<<<<<<< HEAD
+	 * 
+=======
+>>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
+	 */
 	@RequestMapping(value="/list.bbs")
-		public String list(int pageNum, Model model) {
+		public String list(@ModelAttribute("pageNum") int pageNum, Model model) {
+//		model.addAttribute("pageNum", pageNum);
 		bbsService.list(pageNum, model);
-		model.addAttribute("pageNum",pageNum);
 		return "list";
 		
 	}
@@ -83,9 +102,21 @@ public class BBSController {
 		return "writeForm";
 	}
 //	value값은 method를 요청하지 않을 경우 굳이 안써도 된다
-	@Transactional(readOnly=false)
-	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
-	public String write(BBSDto article, HttpSession session, /*UploadDto uploadDto, */BindingResult result, MultipartHttpServletRequest mphsr) {
+//	@Transactional(readOnly=false)
+/*	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
+	public String write(BBSDto article, HttpSession session, MultipartHttpServletRequest mRequest) {
+		article.setId((String)session.getAttribute("id"));
+		bbswrite.write(article,mRequest);
+		return "redirect://list.bbs?pageNum=1";
+	}
+*/	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
+	public String write(BBSDto article, HttpSession session, @RequestPart("fileData") List<MultipartFile> mfile) {
+		article.setId((String)session.getAttribute("id"));
+		
+		bbswrite.write1(article,mfile);
+		return "redirect://list.bbs?pageNum=1";
+	}
+/*	public String write(BBSDto article, HttpSession session, UploadDto uploadDto, BindingResult result, MultipartHttpServletRequest mphsr) {
 //		매개변수로 DTO를 받아오면  Spring에서는 저절로 jsp에 있는 값중 DTO에 있는 파라미터와 일치하는 값이 저절로 DTO 안에 값이 넣어진체 넘어온다. 		
 		System.out.println(article);
 		article.setId((String)session.getAttribute("id"));
@@ -142,7 +173,7 @@ public class BBSController {
 		}
 		return "redirect:list.bbs?pageNum=1";
 	}
-	@RequestMapping(value="/download.bbs")
+*/	@RequestMapping(value="/download.bbs")
 	public void download(String storedFname, HttpServletResponse resp) {
 		System.out.println(storedFname);
 		bbsService.download(storedFname, resp);
@@ -151,7 +182,8 @@ public class BBSController {
 	
 	@RequestMapping(value="/content.bbs")
 	public String content(@RequestParam("pageNum") String pageNum, 
-			@RequestParam String articleNum, Model model) {
+			@RequestParam String articleNum, Model model, int fileStatus) {
+		System.err.println(fileStatus);
 		bbsService.content(pageNum, articleNum, model);
 		return "content";
 	}
@@ -167,9 +199,9 @@ public class BBSController {
 	}
 	
 	@RequestMapping(value="/update.bbs", method=RequestMethod.GET)
-	public String updateForm(String articleNum, String pageNum, Model model) {
-		model.addAttribute("articleNum", articleNum);
-		model.addAttribute("pageNum", pageNum);
+	public String updateForm(@ModelAttribute("articleNum") String articleNum, @ModelAttribute("pageNum") String pageNum, Model model) {
+//		model.addAttribute("articleNum", articleNum);
+//		model.addAttribute("pageNum", pageNum);
 		try {
 			bbsService.updateForm(articleNum, model);
 		} catch (ServletException | IOException e) {
@@ -190,27 +222,18 @@ public class BBSController {
 	}
 	
 	@RequestMapping(value="/replyForm.bbs")
-	public String replyForm(BBSDto bd, Model model,/*HttpServletRequest req, */String pageNum/*, String depth, String pos, String groupId*/) {
-		/*BBSDto bd = new BBSDto();
-		bd.setDepth(Integer.parseInt(req.getParameter("depth")depth));
-		bd.setPos(Integer.parseInt(req.getParameter("pos")pos));
-		bd.setGroupId(Integer.parseInt(req.getParameter("groupId")groupId));
-		*/
-		/*req.setAttribute("replyDto", bd);
-		req.setAttribute("pageNum", pageNum);*/
-		/*System.out.println("뎁스 : " + bd.getDepth());
-		System.out.println(bd);*/
+	public String replyForm(BBSDto bd, Model model,@ModelAttribute("pageNum") String pageNum) {
 		System.out.println(bd);
 		model.addAttribute("replyDto", bd);
-		model.addAttribute("pageNum", pageNum);
+//		model.addAttribute("pageNum", pageNum);
 		return "replyForm"; 
 	}
 	
 	@RequestMapping(value="/reply.bbs", method=RequestMethod.POST)
-	public String reply(String pageNum, Model model, BBSDto article,/*String articleNum, String depth, String pos, String groupId, String title, String content, */HttpSession session) {
+	public String reply(String pageNum, Model model, BBSDto article,HttpSession session) {
 		String id = (String)session.getAttribute("id");
 		try {
-			bbsreply.reply(model, article/*articleNum, depth, pos, groupId, title, content*/, id);
+			bbsreply.reply(model, article, id);
 		} catch (ServletException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -229,33 +252,7 @@ public class BBSController {
 		}
 		return view;
 	}
-	
-/*	@ResponseBody
-	@RequestMapping(value="/commentRead.bbs")
-	public String commentRead(HttpServletRequest req, HttpServletResponse resp) {
-		try {
-			bbscomment.read(req, resp);
-		} catch (ServletException | IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	
-	@RequestMapping(value="/commentWrite.bbs")
-	public String commentWrite(HttpServletRequest req, HttpServletResponse resp) {
-		try {
-			bbscomment.write(req, resp);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	*/
+
 	@RequestMapping(value="/logout.bbs")
 	public String logout(HttpSession session, String pageNum) {
 		session.invalidate();

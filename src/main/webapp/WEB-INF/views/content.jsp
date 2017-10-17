@@ -117,7 +117,7 @@ ${pageNum }<br/>
 그룹아이디 : ${article.groupId }<br/>  
    <form action="/bbs/replyForm.bbs" method="post">      
     <input type="hidden" name="pageNum" value="${pageNum}">
-    <input type="hidden" name="articleNum" value="${article.articleNum}">                 
+    <input type="hidden" name="groupId" value="${article.articleNum}">                 
     <input type="hidden" name="depth" value="${article.depth}">
 <%--     <input type="hidden" name="groupId" value="${article.groupId}"> --%>
 	<table class = "table table-bordered" border="1" width="500" align="center">  

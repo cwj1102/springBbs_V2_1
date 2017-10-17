@@ -8,8 +8,35 @@
 		select count(*) from bbs1
 	</select>
 
+	<select id="getNextArticleNum" resultType="int">
+		select BBS1_SEQ.NEXTVAL from dual
+	</select>
+
+	<insert id="fileUpload" parameterType="com.pknu.bbs.bbs.dto.UploadDto">
+    	INSERT INTO
+    	FILELIST values(file_seq.nextval,#{originFname},#{storedFname},#{fileSize},#{articleNum})
+    </insert>
+    
+	<insert id="write" parameterType="article">
+		INSERT INTO BBS1 values(
+		<if test="articleNum==0">
+			BBS1_SEQ.NEXTVAL
+		</if>
+		<if test="articleNum!=0">
+			#{articleNum}
+		</if>
+		,#{id},#{title},#{content},0,0,0,sysdate,#{fileStatus}
+		)
+	</insert>
+	<insert id="write1" parameterType="article" useGeneratedKeys="true" keyProperty="articleNum" keyColumn="articleNum">
+		INSERT INTO BBS1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},0,0,0,sysdate,#{fileStatus})
+	</insert>
+	<insert id="insertFile"  parameterType="com.pknu.bbs.bbs.dto.UploadDto">
+		INSERT INTO FILELIST VALUES(FILE_SEQ.NEXTVAL,#{originFname}, #{storedFname},
+													 #{fileLength},#{articleNum})
+	</insert>
     <select id="getArticleList" parameterType="HashMap" resultType="article">
-		SELECT articleNum, id, title, depth, hit, to_char(writeDate,'YYYY-MM-DD') as writeDate
+		SELECT articleNum, id, title, depth, hit, to_char(writeDate,'YYYY-MM-DD') as writeDate, fileStatus
 		FROM (SELECT ROWNUM RM, human.*
 			  FROM (SELECT * FROM bbs1
 			  		START WITH groupId=0
@@ -23,42 +50,36 @@
     <select id="loginCheck" parameterType="String" resultType="String">
 		SELECT PASS FROM LOGIN WHERE ID=#{id}
 	</select>
-    <insert id="write">
-        INSERT INTO BBS1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},0,0,0,sysdate,#{fileStatus})
-        <selectKey keyProperty="articleNum" resultType="Integer" order="AFTER"> 
-        	SELECT BBS1_SEQ.currval FROM dual 
-        </selectKey>
-    </insert>
+<!--     <insert id="write"> -->
+<!--         INSERT INTO BBS1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},0,0,0,sysdate,#{fileStatus}) -->
+<!--         <selectKey keyProperty="articleNum" resultType="Integer" order="AFTER">  -->
+<!--         	SELECT BBS1_SEQ.currval FROM dual  -->
+<!--         </selectKey> -->
+<!--     </insert> -->
     <insert id="writeUpload" parameterType="HashMap">
     insert all
 	into bbs1 values(BBS1_SEQ.NEXTVAL,#{article.id},#{article.title},#{article.content},0,0,0,sysdate,#{article.fileStatus})
 	into FILELIST values(file_seq.nextval,#{uploadDto.originFname},#{uploadDto.storedFname},#{uploadDto.fileLength},BBS1_SEQ.currval)
 	select * from dual
     </insert>
-    <insert id="fileUpload" parameterType="HashMap">
-    	INSERT INTO
-    	FILELIST values(file_seq.nextval,#{originFname},#{storedFname},#{fileSize},#{articleNum})
-    </insert>
+   
     <select id="getContent" parameterType="String" resultType="article">
 			SELECT articleNum, id, title, content, depth, 
 				   hit, groupId, writeDate, fileStatus 
 			FROM bbs1 
 			WHERE articleNum=#{articleNum}
 	</select>
-<!-- 	<select id="getContent" parameterType="String" resultType="article"> -->
-<!-- 			SELECT * -->
-<!-- 			FROM bbs  -->
-<!-- 			WHERE article_num=#{articleNum} -->
-<!-- 	</select> -->
-<!--     <update id="posUpdate" parameterType="article"> -->
-<!--         update bbs1 set pos = pos + 1 where pos > #{pos} and group_id = #{groupId} -->
-<!--     </update> -->
     <insert id="reply" parameterType="article">
-        insert into bbs1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},#{depth} + 1,0,#{articleNum},sysdate,#{fileStatus})
+        insert into bbs1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},#{depth} + 1,0,#{groupId},sysdate,#{fileStatus})
     </insert>
-
+	
     <delete id="delete" parameterType="String">
-        delete from bbs1 where articleNum = #{articleNum}
+        delete from bbs1
+        where articleNum in(
+        select articleNum
+        from bbs1
+        start with articleNum = #{articleNum}
+        connect by prior articleNum = groupId)
     </delete>
     <select id="getUpdateArticle" parameterType="String" resultType="article">
 		SELECT TITLE, CONTENT, ARTICLENUM FROM BBS1 WHERE ARTICLENUM=#{articleNum}

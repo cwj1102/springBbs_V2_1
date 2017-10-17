@@ -42,8 +42,8 @@ public class BBSServiceImpl implements BBSService {
 	@Resource(name="pageBlock")
 	Integer pageBlock;
 	
-	@Autowired
-	private FileSystemResource fileSystemResource;
+//	@Autowired
+//	private FileSystemResource fileSystemResource;
 	
 	@Override
 	public void list(int pageNum, Model model) {
@@ -84,7 +84,6 @@ public class BBSServiceImpl implements BBSService {
 	
 	@Override
 	public void content(String pageNum, String articleNum, Model model) {
-		UploadDto uploadDto = null;
 		ArrayList<UploadDto> uploadList;
 		BBSDto article = new BBSDto();
 		try {
@@ -142,12 +141,13 @@ public class BBSServiceImpl implements BBSService {
 		}
 	}
 
+	@Resource(name="saveDir")
+	private String saveDir;
 	@Override
 	public void download(String storedFname, HttpServletResponse resp) {
 		UploadDto uploadDto = bbsDao.getDownloadStatus(storedFname);
-		
 			try {
-				byte fileByte[] = FileUtils.readFileToByteArray(new File(fileSystemResource.getPath()+storedFname));
+				byte fileByte[] = FileUtils.readFileToByteArray(new File(saveDir+storedFname));
 				resp.setContentType("application/octet-stream");
 				resp.setContentLength(fileByte.length);
 				resp.setHeader("Content-Disposition", "attachment; fileName=\""+ URLEncoder.encode(uploadDto.getOriginFname(),"UTF-8")+"\";");

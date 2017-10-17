@@ -1,14 +1,16 @@
 package com.pknu.bbs.bbs.write;
 
-import java.io.IOException;
+import java.util.List;
 
-import javax.servlet.ServletException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.pknu.bbs.bbs.dto.BBSDto;
-import com.pknu.bbs.bbs.dto.UploadDto;
 
 public interface BBSWrite {
-	String write(BBSDto article) throws ServletException, IOException;
+	String write(BBSDto article);
 
-	void fileUpload(String originFname, String storedFname, long fileSize, String articleNum);
+	void write(BBSDto article, MultipartHttpServletRequest mRequest);
+
+	void write1(BBSDto article, List<MultipartFile> mfile);
 }

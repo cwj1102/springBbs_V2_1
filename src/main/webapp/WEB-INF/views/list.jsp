@@ -131,7 +131,7 @@ h1 div{
 	  <c:if test="${article.depth == 0}">
 	    <img src="images/image3.png" width="0"  height="16">
 	  </c:if>         
-      <a href="/bbs/content.bbs?articleNum=${article.articleNum}&pageNum=${pageNum}">
+      <a href="/bbs/content.bbs?articleNum=${article.articleNum}&pageNum=${pageNum}&fileStatus=${article.fileStatus}">
           ${article.title}</a> 
           <c:if test="${article.commentCount!=0}">
           	<a style="font-size: small;">[${article.commentCount}]</a>
