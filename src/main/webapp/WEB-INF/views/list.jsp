@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" 
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>  
 <head>
 <meta charset="utf-8">
@@ -16,6 +16,10 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <style>
+	#center{
+		margin: 0 auto;
+		text-align: center;
+	}
 	#listTitle{
 		font-size: 20px;
 	}
@@ -91,7 +95,7 @@ h1 div{
  </c:if>
  <br/>
  <br/>
-<center><b id="listTitle">글목록(전체 글:${totalCount})</b>
+<div id="center"><b id="listTitle">글목록(전체 글:${totalCount})</b>
 <table  class="write">
   <tr>
     <td align="right" >
@@ -151,7 +155,7 @@ h1 div{
 	  </td>
   </tr>
 </table>
-</center>
+</div>
 </div>
 <!-- <script src="/webjars/bootstrap/3.3.7/dist/js/bootstrap.min.js"></script> -->
 <!-- <script src="/webjars/jquery/3.2.1/dist/jquery.min.js"></script> -->

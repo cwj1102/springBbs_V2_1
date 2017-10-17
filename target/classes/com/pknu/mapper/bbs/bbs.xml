@@ -69,7 +69,16 @@
 			FROM bbs1 
 			WHERE articleNum=#{articleNum}
 	</select>
-    <insert id="reply" parameterType="article">
+<!-- 	쿼리문 2번(commentsCount와 getContent)을 실행시키지 않고 한번에 처리할때 -->
+<!--     <select id="getContent" parameterType="String" resultType="article"> -->
+<!-- 			SELECT bbs1.*, (select count(*) -->
+<!-- 							from comments -->
+<!-- 							where comments.articleNum = bbs1.articleNum) as commentConut  -->
+<!-- 			FROM bbs1  -->
+<!-- 			WHERE articleNum=#{articleNum} -->
+<!-- 	</select> -->
+	
+    <insert id="reply" parameterType="article" useGeneratedKeys="true" keyProperty="articleNum" keyColumn="articleNum">
         insert into bbs1 values(BBS1_SEQ.NEXTVAL,#{id},#{title},#{content},#{depth} + 1,0,#{groupId},sysdate,#{fileStatus})
     </insert>
 	

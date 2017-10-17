@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -134,7 +134,8 @@ ${pageNum }<br/>
 			<td colspan="2">
 <%-- 			<a href="/bbs/download.bbs?fname=${article.fileStatus}">${article.fileStatus}</a></td> --%>
    			<c:forEach var="uploadList" items="${uploadList}">
-	  			<a href="/bbs/download.bbs?storedFname=${uploadList.storedFname}" target="_blank"><c:out value="${uploadList.originFname}"/><br/></a>
+<%-- 	  			<a href="/bbs/download.bbs?storedFname=${uploadList.storedFname}" target="_blank"><c:out value="${uploadList.originFname}"/><br/></a> --%>
+	  			<a href="/bbs/download.bbs?storedFname=${uploadList.storedFname}&originFname=${uploadList.originFname}&fileLength=${uploadList.fileLength}" target="_blank"><c:out value="${uploadList.originFname}"/><br/></a>
 	  		</c:forEach>
 		 </tr>					
 		 <tr>			 

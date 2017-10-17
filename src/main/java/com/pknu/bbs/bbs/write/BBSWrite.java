@@ -13,4 +13,6 @@ public interface BBSWrite {
 	void write(BBSDto article, MultipartHttpServletRequest mRequest);
 
 	void write1(BBSDto article, List<MultipartFile> mfile);
+	
+	void commonFileUpload(List<MultipartFile> mfile, int articleNum);
 }

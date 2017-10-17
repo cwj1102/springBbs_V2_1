@@ -22,11 +22,10 @@
 <div class="col-md-3 col-sm-2"></div>
 <div class="col-md-6 col-sm-8">
 <center>
-<form action="/bbs/reply.bbs" method="post">
+<form action="/bbs/reply.bbs" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="articleNum" value="${replyDto.articleNum}">
 	<input type="hidden" name="pageNum" value="${pageNum}">                 
     <input type="hidden" name="depth" value="${replyDto.depth}">
-<%--     <input type="hidden" name="pos" value="${replyDto.pos}"> --%>
     <input type="hidden" name="groupId" value="${replyDto.groupId}">
 	<table border="2" class = "table table-bordered">  
 		<tr>
@@ -44,7 +43,7 @@
 	    </tr> 	    
 	    <tr>
 	      <td>첨부 : </td>
-	      <td><input type="file"  name="fname" ></td>
+	      <td><input type="file"  name="fileData" multiple="multiple" ></td>
 	    </tr>
 	    <tr>
 	      <td><input type="submit" value="글쓰기"></td>

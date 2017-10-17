@@ -28,80 +28,77 @@ import com.pknu.bbs.comment.dao.CommentDao;
 public class BBSServiceImpl implements BBSService {
 	@Autowired
 	BBSDao bbsDao;
-	
-//	@Autowired
-//	CommentDao commentDao;
-//	
-	@Autowired //type이 Page인 빈은 DI해준다
+
+	// @Autowired
+	// CommentDao commentDao;
+	//
+	@Autowired // type이 Page인 빈은 DI해준다
 	Page page;
-	
-	
-	@Resource(name="pageSize") //type이 String인 빈을 DI해준다 그중에서 id->name->class 순으로 "pageSize"인 녀석을 DI한다.
+
+	@Resource(name = "pageSize") // type이 String인 빈을 DI해준다 그중에서 id->name->class 순으로 "pageSize"인 녀석을 DI한다.
 	Integer pageSize;
-	
-	@Resource(name="pageBlock")
+
+	@Resource(name = "pageBlock")
 	Integer pageBlock;
-	
-//	@Autowired
-//	private FileSystemResource fileSystemResource;
-	
+
+	// @Autowired
+	// private FileSystemResource fileSystemResource;
+
 	@Override
 	public void list(int pageNum, Model model) {
-		int totalCount=0;
-		ArrayList<BBSDto> articleList=null;
-		HashMap<String, String> pagingMap=null;
-		
-		
-		
-		
-		
+		int totalCount = 0;
+		ArrayList<BBSDto> articleList = null;
+		HashMap<String, String> pagingMap = null;
+
 		try {
 			totalCount = bbsDao.getTotalCount();
-			
+
 			pagingMap = page.paging(pageNum, totalCount, pageSize, pageBlock);
-			
+
 			int startRow = page.getStartRow();
 			int endRow = page.getEndRow();
-			HashMap<Object,Object> paramMap = new HashMap<>();
+			HashMap<Object, Object> paramMap = new HashMap<>();
 			paramMap.put("startRow", startRow);
 			paramMap.put("endRow", endRow);
-			
-			articleList = (ArrayList<BBSDto>)bbsDao.getArticleList(paramMap);
-			
-			for(BBSDto bbsdto:articleList) {
-				bbsdto.setCommentCount((long)bbsDao.commentsCount(bbsdto.getArticleNum()));
+
+			articleList = (ArrayList<BBSDto>) bbsDao.getArticleList(paramMap);
+
+			for (BBSDto bbsdto : articleList) {
+				bbsdto.setCommentCount((long) bbsDao.commentsCount(bbsdto.getArticleNum()));
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} 
-		model.addAttribute("totalCount",totalCount);
-		model.addAttribute("articleList",articleList);
-		model.addAttribute("pageCode",pagingMap.get("pageCode"));
-	
+		}
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("articleList", articleList);
+		model.addAttribute("pageCode", pagingMap.get("pageCode"));
+
 	}
-	
+
 	@Override
 	public void content(int fileStatus, String articleNum, Model model) {
-		ArrayList<UploadDto> uploadList;
+		// ArrayList<UploadDto> uploadList;
 		BBSDto article = null;
 		try {
 			article = bbsDao.getContent(articleNum);
-			article.setCommentCount((long)bbsDao.commentsCount(Integer.parseInt(articleNum)));
-			
-			if(article.getFileStatus()==1) {
-				uploadList = new ArrayList<>();
-				uploadList = (ArrayList<UploadDto>) bbsDao.getFileStatus(articleNum);
-				System.out.println(uploadList);
-				model.addAttribute("uploadList",uploadList);
+			article.setCommentCount((long) bbsDao.commentsCount(Integer.parseInt(articleNum)));
+
+			if (article.getFileStatus() == 1) {
+				/*
+				 * uploadList = new ArrayList<>(); uploadList = (ArrayList<UploadDto>)
+				 * bbsDao.getFileStatus(articleNum); System.out.println(uploadList);
+				 * model.addAttribute("uploadList",uploadList);
+				 */
+				model.addAttribute("uploadList", bbsDao.getFileStatus(articleNum));
 			}
 			model.addAttribute("article", article);
 		} catch (NumberFormatException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void delete(String articleNum) throws ServletException, IOException {
 		try {
@@ -109,28 +106,29 @@ public class BBSServiceImpl implements BBSService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	@Override
 	public void updateForm(String articleNum, Model model) throws ServletException, IOException {
-		
-		BBSDto article=null;
+
+		BBSDto article = null;
 		try {
-			article=bbsDao.getUpdateArticle(articleNum);
+			article = bbsDao.getUpdateArticle(articleNum);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		model.addAttribute("article", article);
 	}
-	
+
 	@Override
-	public void update(Model model, String articleNum, String title, String content) throws ServletException, IOException {
-		
+	public void update(Model model, String articleNum, String title, String content)
+			throws ServletException, IOException {
+
 		System.out.println(articleNum + title + content);
-		HashMap<Object,Object> paramMap = new HashMap<>();
+		HashMap<Object, Object> paramMap = new HashMap<>();
 		paramMap.put("articleNum", articleNum);
-		paramMap.put("title",title);
+		paramMap.put("title", title);
 		paramMap.put("content", content);
 		try {
 			bbsDao.updateArticle(paramMap);
@@ -139,30 +137,49 @@ public class BBSServiceImpl implements BBSService {
 		}
 	}
 
-	@Resource(name="saveDir")
+	@Resource(name = "saveDir")
 	private String saveDir;
+
 	@Override
 	public void download(String storedFname, HttpServletResponse resp) {
 		UploadDto uploadDto = bbsDao.getDownloadStatus(storedFname);
-			try {
-				byte fileByte[] = FileUtils.readFileToByteArray(new File(saveDir+storedFname));
-				resp.setContentType("application/octet-stream");
-				resp.setContentLength(fileByte.length);
-				resp.setHeader("Content-Disposition", "attachment; fileName=\""+ URLEncoder.encode(uploadDto.getOriginFname(),"UTF-8")+"\";");
-				resp.setHeader("Content-Transfer-Encoding","binary");
-				resp.getOutputStream().write(fileByte);
-				
-				resp.getOutputStream().flush();
-				resp.getOutputStream().close();
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+		try {
+			byte fileByte[] = FileUtils.readFileToByteArray(new File(saveDir + storedFname));
+			resp.setContentType("application/octet-stream");
+			resp.setContentLength(fileByte.length);
+			resp.setHeader("Content-Disposition",
+					"attachment; fileName=\"" + URLEncoder.encode(uploadDto.getOriginFname(), "UTF-8") + "\";");
+			resp.setHeader("Content-Transfer-Encoding", "binary");
+			resp.getOutputStream().write(fileByte);
+
+			resp.getOutputStream().flush();
+			resp.getOutputStream().close();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
-	
+
+	@Override
+	public FileSystemResource download(HttpServletResponse resp, String storedFname, String originFname,
+			int fileLength) {
+		resp.setContentType("application/download");
+		resp.setContentLength(fileLength);
+
+		try {
+			originFname = URLEncoder.encode(originFname, "utf-8").replace("+", "%20").replace("%28", "(").replace("%29",
+					")");
+		} catch (Exception e) {
+		}
+
+		resp.setHeader("Content-Disposition", "attachment;" + " filename=\"" + originFname + "\";");
+
+		FileSystemResource fsr = new FileSystemResource(saveDir + storedFname);
+		return fsr;
+	}
 
 }

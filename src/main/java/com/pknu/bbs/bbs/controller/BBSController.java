@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pknu.bbs.bbs.dto.BBSDto;
@@ -163,16 +165,25 @@ public class BBSController {
 		}
 		return "redirect:list.bbs?pageNum=1";
 	}
-*/	@RequestMapping(value="/download.bbs")
+*/	
+	/*@RequestMapping(value="/download.bbs")
 	public void download(String storedFname, HttpServletResponse resp) {
 		System.out.println(storedFname);
 		bbsService.download(storedFname, resp);
+	}*/
+	@RequestMapping(value="/download.bbs")
+	@ResponseBody
+	public FileSystemResource download(@RequestParam String storedFname, 
+									@RequestParam String originFname, 
+									@RequestParam int fileLength, 
+									HttpServletResponse resp) {
+		return bbsService.download(resp, storedFname, originFname, fileLength);
 	}
 	
 	
 	@RequestMapping(value="/content.bbs")
-	public String content(@RequestParam("pageNum") @ModelAttribute("pageNum") String pageNum, 
-			@RequestParam String articleNum, Model model, int fileStatus) {
+	public String content(@RequestParam("pageNum") String pageNum, 
+			@RequestParam String articleNum, Model model, @RequestParam("fileStatus") int fileStatus) {
 		System.err.println(fileStatus);
 		bbsService.content(fileStatus, articleNum, model);
 		model.addAttribute("pageNum",pageNum);
@@ -216,17 +227,15 @@ public class BBSController {
 	public String replyForm(BBSDto bd, Model model,@ModelAttribute("pageNum") String pageNum) {
 		System.out.println(bd);
 		model.addAttribute("replyDto", bd);
-//		model.addAttribute("pageNum", pageNum);
 		return "replyForm"; 
 	}
 	
 	@RequestMapping(value="/reply.bbs", method=RequestMethod.POST)
-	public String reply(String pageNum, Model model, BBSDto article,HttpSession session) {
+	public String reply(String pageNum, Model model, BBSDto article,HttpSession session ,@RequestPart("fileData") List<MultipartFile> mfile) {
 		String id = (String)session.getAttribute("id");
 		try {
-			bbsreply.reply(model, article, id);
+			bbsreply.reply(model, article, id, mfile);
 		} catch (ServletException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "redirect:list.bbs?pageNum="+pageNum;

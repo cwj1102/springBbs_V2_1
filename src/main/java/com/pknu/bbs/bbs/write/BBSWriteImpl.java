@@ -56,7 +56,8 @@ public class BBSWriteImpl implements BBSWrite {
 		}
 	}
 	
-	private void commonFileUpload(List<MultipartFile> mfile, int articleNum) {
+	@Override
+	public void commonFileUpload(List<MultipartFile> mfile, int articleNum) {
 		UploadDto uploadDto = null;
 		
 		for(MultipartFile uploadFile:mfile) {

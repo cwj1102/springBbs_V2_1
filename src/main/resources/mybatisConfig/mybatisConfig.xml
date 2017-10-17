@@ -18,7 +18,7 @@
 	
 	<typeAliases>
 	    <typeAlias alias="article" type="com.pknu.bbs.bbs.dto.BBSDto" /> 
-	    <typeAlias alias="comment" type="com.pknu.bbs.comment.dto.CommentDto" /> 
+	    <typeAlias alias="comment" type="com.pknu.bbs.comment.dto.CommentDto" />
 	</typeAliases>
 	
 <!-- 	<mappers> -->
