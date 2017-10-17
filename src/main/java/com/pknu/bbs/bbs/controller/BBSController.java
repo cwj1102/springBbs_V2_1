@@ -12,14 +12,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-<<<<<<< HEAD
-=======
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-<<<<<<< HEAD
->>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
-=======
->>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,16 +47,10 @@ public class BBSController {
 	@Autowired
 	private BBSReply bbsreply;
 	
-<<<<<<< HEAD
 //	@Autowired
 //	private FileSystemResource fileSystemResource;
-=======
-	@Autowired
-	private FileSystemResource fileSystemResource;
-<<<<<<< HEAD
->>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
-=======
->>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
+//	@Autowired
+//	private FileSystemResource fileSystemResource;
 	/*
 	 * @ModelAttribute는 파라미터 이름을 반드시 적어주자
 	 * 그러면 객체가 아니고 프리미티브 타입이 와도 됨
@@ -72,13 +60,6 @@ public class BBSController {
 	 * public String list(@ModelAttribute int pageNum, Model model){
 	 * 아래코드는 객체를 생성할려고 하는데  String 이니까 에러는 안나지만... 파라미터가 안넘어옴
 	 * public String list(@ModelAttribute String pageNum, Model model){
-<<<<<<< HEAD
-<<<<<<< HEAD
-	 * 
-=======
->>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
-=======
->>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
 	 */
 	@RequestMapping(value="/list.bbs")
 		public String list(@ModelAttribute("pageNum") int pageNum, Model model) {
@@ -190,10 +171,11 @@ public class BBSController {
 	
 	
 	@RequestMapping(value="/content.bbs")
-	public String content(@RequestParam("pageNum") String pageNum, 
+	public String content(@RequestParam("pageNum") @ModelAttribute("pageNum") String pageNum, 
 			@RequestParam String articleNum, Model model, int fileStatus) {
 		System.err.println(fileStatus);
-		bbsService.content(pageNum, articleNum, model);
+		bbsService.content(fileStatus, articleNum, model);
+		model.addAttribute("pageNum",pageNum);
 		return "content";
 	}
 	@RequestMapping(value="/delete.bbs")

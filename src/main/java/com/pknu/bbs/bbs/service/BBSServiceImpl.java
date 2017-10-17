@@ -83,9 +83,9 @@ public class BBSServiceImpl implements BBSService {
 	}
 	
 	@Override
-	public void content(String pageNum, String articleNum, Model model) {
+	public void content(int fileStatus, String articleNum, Model model) {
 		ArrayList<UploadDto> uploadList;
-		BBSDto article = new BBSDto();
+		BBSDto article = null;
 		try {
 			article = bbsDao.getContent(articleNum);
 			article.setCommentCount((long)bbsDao.commentsCount(Integer.parseInt(articleNum)));
@@ -100,8 +100,6 @@ public class BBSServiceImpl implements BBSService {
 		} catch (NumberFormatException | SQLException e) {
 			e.printStackTrace();
 		}
-		model.addAttribute("article", article);
-		model.addAttribute("pageNum", pageNum);
 	}
 	
 	@Override
