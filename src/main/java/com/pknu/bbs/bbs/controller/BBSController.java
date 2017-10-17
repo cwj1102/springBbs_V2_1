@@ -11,10 +11,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -85,12 +84,13 @@ public class BBSController {
 		return "redirect:list.bbs?pageNum=1";
 	}
 	
-	@RequestMapping(value="/write.bbs", method=RequestMethod.GET)
-	public String writeForm(HttpSession session, HttpServletRequest req) {
+	@RequestMapping(value="/writeForm.bbs", method=RequestMethod.GET)
+	public String writeForm(/*HttpSession session, HttpServletRequest req*/) {
+		/*System.out.println(req.getHeader("referer"));
 		if((String)session.getAttribute("id")==null){
 			req.setAttribute("pageNum", "1");
 			return "login";
-		}
+		}*/
 		return "writeForm";
 	}
 //	value값은 method를 요청하지 않을 경우 굳이 안써도 된다
@@ -104,73 +104,12 @@ public class BBSController {
 */	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
 	public String write(BBSDto article, HttpSession session, @RequestPart("fileData") List<MultipartFile> mfile) {
 		article.setId((String)session.getAttribute("id"));
-		
+		if(article.getContent().isEmpty() || article.getTitle().isEmpty()) {
+			return "writeForm";
+		}
 		bbswrite.write1(article,mfile);
 		return "redirect://list.bbs?pageNum=1";
 	}
-/*	public String write(BBSDto article, HttpSession session, UploadDto uploadDto, BindingResult result, MultipartHttpServletRequest mphsr) {
-//		매개변수로 DTO를 받아오면  Spring에서는 저절로 jsp에 있는 값중 DTO에 있는 파라미터와 일치하는 값이 저절로 DTO 안에 값이 넣어진체 넘어온다. 		
-		System.out.println(article);
-		article.setId((String)session.getAttribute("id"));
-		
-		if(result.hasErrors()) {
-			for(ObjectError error : result.getAllErrors()) {
-				System.err.println("Error:" + error.getCode() + " - " + error.getDefaultMessage());
-			}
-			return "writeForm";
-		}
-		List<MultipartFile> mf = mphsr.getFiles("fileData");
-		
-		if(mf.size() == 1&& mf.get(0).getOriginalFilename().equals("")) {
-			try {
-				bbswrite.write(article);
-			} catch (ServletException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			article.setFileStatus(1);
-			try {
-				bbswrite.write(article);
-			for(int i =0; i<mf.size(); i++) {
-				String articleNum = String.valueOf(article.getArticleNum());
-					String uuid = UUID.randomUUID().toString();
-					
-					String originFname = mf.get(i).getOriginalFilename();
-					String storedFname = uuid + "_" + originFname;
-					
-					String savePath = fileSystemResource.getPath()+storedFname;
-					
-					long fileSize = mf.get(i).getSize();
-					
-					try {
-						mf.get(i).transferTo(new File(savePath));
-					} catch (IllegalStateException | IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-					bbswrite.fileUpload(originFname, storedFname, fileSize, articleNum);
-		}
-			} catch (ServletException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return "redirect:list.bbs?pageNum=1";
-	}
-*/	
-	/*@RequestMapping(value="/download.bbs")
-	public void download(String storedFname, HttpServletResponse resp) {
-		System.out.println(storedFname);
-		bbsService.download(storedFname, resp);
-	}*/
 	@RequestMapping(value="/download.bbs")
 	@ResponseBody
 	public FileSystemResource download(@RequestParam String storedFname, 
@@ -183,7 +122,8 @@ public class BBSController {
 	
 	@RequestMapping(value="/content.bbs")
 	public String content(@RequestParam("pageNum") String pageNum, 
-			@RequestParam String articleNum, Model model, @RequestParam("fileStatus") int fileStatus) {
+			@RequestParam String articleNum, Model model, @RequestParam("fileStatus") int fileStatus, HttpServletRequest req) {
+//		model.addAttribute("referer", req.getRequestURL());
 		System.err.println(fileStatus);
 		bbsService.content(fileStatus, articleNum, model);
 		model.addAttribute("pageNum",pageNum);
@@ -240,11 +180,32 @@ public class BBSController {
 		}
 		return "redirect:list.bbs?pageNum="+pageNum;
 	}
-	
-	@RequestMapping(value="/login.bbs", method=RequestMethod.POST)
-	public String login(HttpServletRequest req) {
-			
+	@RequestMapping(value="/loginForm.bbs")
+	public String loginForm(HttpServletRequest req, Model model) {
+		return "login";
+	}
+	@RequestMapping(value="/login.bbs"/*, method=RequestMethod.POST*/)
+	public String login(HttpServletRequest req, HttpServletResponse resp) {
 		String view=null;
+		if(!req.getSession().getAttribute("reqFull").equals("")) {
+			try {
+				System.err.println(req.getSession().getAttribute("reqFull"));
+				try {
+					bbsLogin.loginCheck(req);
+					resp.sendRedirect((String)req.getSession().getAttribute("reqFull"));
+					req.getSession().setAttribute("reqFull", "");
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return view;
+		}
 		try {
 			view = bbsLogin.loginCheck(req);
 		} catch (SQLException e) {

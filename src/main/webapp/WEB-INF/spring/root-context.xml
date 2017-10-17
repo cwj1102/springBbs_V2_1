@@ -4,8 +4,11 @@
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
@@ -22,15 +25,15 @@
 		<property name="password" value="${password}" />
 	</bean>
 
-<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
-	<constructor-arg ref="dataSourceSpied" />
-	<property name="logFormatter">
-		<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
-			<property name="loggingType" value="MULTI_LINE" />
-			<property name="sqlPrefix" value="SQL:::" />
-		</bean>
-	</property>
-</bean>
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="SQL:::" />
+			</bean>
+		</property>
+	</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -59,23 +62,24 @@
 	<bean id="pageBlock" class="java.lang.Integer">
 		<constructor-arg value="10"></constructor-arg>
 	</bean>
-<!-- 	id가 무조건 "multipartResolver"여야 한다. Resolver가  파일로 받아준다.-->
+	<!-- id가 무조건 "multipartResolver"여야 한다. Resolver가 파일로 받아준다. -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="20000000" />
 	</bean>
-<!-- 	<bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource"> -->
-<!-- 		<constructor-arg value="d://uploadKch//"/> -->
-<!-- 	</bean> -->
+	<!-- <bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource"> -->
+	<!-- <constructor-arg value="d://uploadKch//"/> -->
+	<!-- </bean> -->
 	<bean id="saveDir" class="java.lang.String">
-		<constructor-arg value="d://uploadKch//"/>
+		<constructor-arg value="d://uploadKch//" />
 	</bean>
-	
-<!-- Transaction Manager --> 
-<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
-	<property name="dataSource" ref="dataSource" /> 
-</bean> 
-<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- Transaction Manager -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 
 </beans>

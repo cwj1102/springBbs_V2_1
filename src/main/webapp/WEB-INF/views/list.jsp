@@ -99,7 +99,7 @@ h1 div{
 <table  class="write">
   <tr>
     <td align="right" >
-       <a href="/bbs/write.bbs">글쓰기</a>
+       <a href="/bbs/writeForm.bbs">글쓰기</a>
     </td>
   </tr>
 </table>
