@@ -16,6 +16,9 @@ import org.springframework.ui.Model;
 =======
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+<<<<<<< HEAD
+>>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
+=======
 >>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +59,9 @@ public class BBSController {
 =======
 	@Autowired
 	private FileSystemResource fileSystemResource;
+<<<<<<< HEAD
+>>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
+=======
 >>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
 	/*
 	 * @ModelAttribute는 파라미터 이름을 반드시 적어주자
@@ -67,7 +73,10 @@ public class BBSController {
 	 * 아래코드는 객체를 생성할려고 하는데  String 이니까 에러는 안나지만... 파라미터가 안넘어옴
 	 * public String list(@ModelAttribute String pageNum, Model model){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * 
+=======
+>>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
 =======
 >>>>>>> 3943105e1d609a376546d64f6ce7006480575aa4
 	 */
