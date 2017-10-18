@@ -84,12 +84,12 @@ public class BBSController {
 		return "redirect:list.bbs?pageNum=1";
 	}
 	
-	@RequestMapping(value="/writeForm.bbs", method=RequestMethod.GET)
+	@RequestMapping(value="/write.bbs", method=RequestMethod.GET)
 	public String writeForm(HttpSession session, HttpServletRequest req) {
-		if((String)session.getAttribute("id")==null){
-			req.setAttribute("pageNum", "1");
+		/*if((String)session.getAttribute("id")==null){
+		req.setAttribute("pageNum", "1");
 			return "login";
-		}
+		}*/
 		return "writeForm";
 	}
 //	value값은 method를 요청하지 않을 경우 굳이 안써도 된다
@@ -121,7 +121,11 @@ public class BBSController {
 	
 	@RequestMapping(value="/content.bbs")
 	public String content(@RequestParam("pageNum") String pageNum, 
-			@RequestParam String articleNum, Model model, @RequestParam("fileStatus") int fileStatus, HttpServletRequest req) {
+			@RequestParam String articleNum, 
+			Model model, 
+			@RequestParam("fileStatus") int fileStatus, 
+			HttpServletRequest req,
+			HttpSession session) {
 		System.err.println(fileStatus);
 		bbsService.content(fileStatus, articleNum, model);
 		model.addAttribute("pageNum",pageNum);

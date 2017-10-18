@@ -10,10 +10,20 @@
 	<properties>
 		<java-version>1.8</java-version>
 		<org.springframework-version>4.3.11.RELEASE</org.springframework-version>
-		<org.aspectj-version>1.6.10</org.aspectj-version>
+		<org.aspectj-version>1.8.11</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 	</properties>
 	<dependencies>
+	
+	<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjweaver</artifactId>
+    <version>1.8.11</version>
+</dependency>
+	
+	
+	
 	<dependency>
   <groupId>org.lazyluke</groupId>
   <artifactId>log4jdbc-remix</artifactId>
