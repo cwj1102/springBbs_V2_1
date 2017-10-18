@@ -187,7 +187,8 @@ public class BBSController {
 	@RequestMapping(value="/login.bbs"/*, method=RequestMethod.POST*/)
 	public String login(HttpServletRequest req, HttpServletResponse resp) {
 		String view=null;
-		if(!req.getSession().getAttribute("reqFull").equals("")) {
+		System.out.println(req.getRequestURI());
+		if(req.getRequestURI().equals("/content.bbs")&&!req.getSession().getAttribute("reqFull").equals("")) {
 			try {
 				System.err.println(req.getSession().getAttribute("reqFull"));
 				try {

@@ -3,12 +3,15 @@ package com.pknu.bbs.bbs.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter{
+	long mesure;
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		mesure = System.currentTimeMillis();
 		/*System.out.println("content : requestURI  "  + request.getRequestURI());
 		System.out.println("content : requestURL  "  + request.getRequestURL());
 		System.out.println("content : requestContextPath  "  + request.getContextPath());
@@ -33,4 +36,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
 		}
 		return true;
 	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
+		super.postHandle(request, response, handler, modelAndView);
+		System.out.println("메소드 걸린시간 -> " + ((System.currentTimeMillis() - mesure)/1000) + "초");
+	}
+	
 }
