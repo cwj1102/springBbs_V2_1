@@ -3,21 +3,20 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
 	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:db.properties" />
 	</bean>
 
-	<bean id="dataSourceSpied"
+	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${driverClassName}" />
 		<property name="url" value="${url}" />
@@ -25,15 +24,15 @@
 		<property name="password" value="${password}" />
 	</bean>
 
-	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
-		<constructor-arg ref="dataSourceSpied" />
-		<property name="logFormatter">
-			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
-				<property name="loggingType" value="MULTI_LINE" />
-				<property name="sqlPrefix" value="SQL:::" />
-			</bean>
-		</property>
-	</bean>
+<!-- 	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource"> -->
+<!-- 		<constructor-arg ref="dataSourceSpied" /> -->
+<!-- 		<property name="logFormatter"> -->
+<!-- 			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter"> -->
+<!-- 				<property name="loggingType" value="MULTI_LINE" /> -->
+<!-- 				<property name="sqlPrefix" value="SQL:::" /> -->
+<!-- 			</bean> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -79,7 +78,6 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<tx:annotation-driven transaction-manager="transactionManager" />
-
-
+	<!-- @Transactional을 인식시키기 위한 조치 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>

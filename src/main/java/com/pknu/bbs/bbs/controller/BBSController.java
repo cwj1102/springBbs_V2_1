@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,7 @@ public class BBSController {
 	 * public String list(@ModelAttribute String pageNum, Model model){
 	 */
 	@RequestMapping(value="/list.bbs")
+	@Transactional
 		public String list(@ModelAttribute("pageNum") int pageNum, Model model) {
 //		model.addAttribute("pageNum", pageNum);
 		bbsService.list(pageNum, model);
@@ -85,6 +87,7 @@ public class BBSController {
 	}
 	
 	@RequestMapping(value="/write.bbs", method=RequestMethod.GET)
+	@Transactional
 	public String writeForm(HttpSession session, HttpServletRequest req) {
 		/*if((String)session.getAttribute("id")==null){
 		req.setAttribute("pageNum", "1");
@@ -101,6 +104,7 @@ public class BBSController {
 		return "redirect://list.bbs?pageNum=1";
 	}
 */	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
+	@Transactional
 	public String write(BBSDto article, HttpSession session, @RequestPart("fileData") List<MultipartFile> mfile) {
 		article.setId((String)session.getAttribute("id"));
 		if(article.getContent().isEmpty() || article.getTitle().isEmpty()) {
@@ -120,6 +124,7 @@ public class BBSController {
 	
 	
 	@RequestMapping(value="/content.bbs")
+	@Transactional
 	public String content(@RequestParam("pageNum") String pageNum, 
 			@RequestParam String articleNum, 
 			Model model, 

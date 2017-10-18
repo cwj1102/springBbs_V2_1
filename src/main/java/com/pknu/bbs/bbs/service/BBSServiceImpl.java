@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.pknu.bbs.bbs.common.Page;
@@ -43,7 +44,6 @@ public class BBSServiceImpl implements BBSService {
 
 	// @Autowired
 	// private FileSystemResource fileSystemResource;
-
 	@Override
 	public void list(int pageNum, Model model) {
 		int totalCount = 0;
