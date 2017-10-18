@@ -21,12 +21,9 @@ public class BBSLoginImpl implements BBSLogin {
 		String id = req.getParameter("id");
 		String pass = req.getParameter("pass");
 		String pageNum = req.getParameter("pageNum");
-		System.out.println("login pageNum"+pageNum);
+//		System.out.println("login pageNum"+pageNum);
 		int result = 0;
 		String view = null;
-//		юс╫ц
-		pageNum = "1";
-		
 		
 		int loginStatus =0;
 		String dbPass =bbsDao.loginCheck(id); 

@@ -85,12 +85,11 @@ public class BBSController {
 	}
 	
 	@RequestMapping(value="/writeForm.bbs", method=RequestMethod.GET)
-	public String writeForm(/*HttpSession session, HttpServletRequest req*/) {
-		/*System.out.println(req.getHeader("referer"));
+	public String writeForm(HttpSession session, HttpServletRequest req) {
 		if((String)session.getAttribute("id")==null){
 			req.setAttribute("pageNum", "1");
 			return "login";
-		}*/
+		}
 		return "writeForm";
 	}
 //	value값은 method를 요청하지 않을 경우 굳이 안써도 된다
@@ -123,7 +122,6 @@ public class BBSController {
 	@RequestMapping(value="/content.bbs")
 	public String content(@RequestParam("pageNum") String pageNum, 
 			@RequestParam String articleNum, Model model, @RequestParam("fileStatus") int fileStatus, HttpServletRequest req) {
-//		model.addAttribute("referer", req.getRequestURL());
 		System.err.println(fileStatus);
 		bbsService.content(fileStatus, articleNum, model);
 		model.addAttribute("pageNum",pageNum);
@@ -187,26 +185,6 @@ public class BBSController {
 	@RequestMapping(value="/login.bbs"/*, method=RequestMethod.POST*/)
 	public String login(HttpServletRequest req, HttpServletResponse resp) {
 		String view=null;
-		System.out.println(req.getRequestURI());
-		if(req.getRequestURI().equals("/content.bbs")&&!req.getSession().getAttribute("reqFull").equals("")) {
-			try {
-				System.err.println(req.getSession().getAttribute("reqFull"));
-				try {
-					bbsLogin.loginCheck(req);
-					resp.sendRedirect((String)req.getSession().getAttribute("reqFull"));
-					req.getSession().setAttribute("reqFull", "");
-					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return view;
-		}
 		try {
 			view = bbsLogin.loginCheck(req);
 		} catch (SQLException e) {

@@ -26,16 +26,5 @@
 	<context:component-scan base-package="com.pknu.bbs.bbs" />
 	
 	
-		<!-- 	서블릿에서 스캔했으므로 root 파일에서 interceptor를 선언하면 DispatcherServlet이 -->
-<!-- 	LoginInterceptor 인식을 못함 -->
-	<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/writeForm.bbs"/>
-			<mvc:mapping path="/content.bbs"/>
-<!-- 			<mvc:mapping path="content.bbs"/> -->
-			<bean class="com.pknu.bbs.bbs.interceptor.LoginInterceptor"/>
-		</mvc:interceptor>
-	</mvc:interceptors>
-
 	
 </beans>
