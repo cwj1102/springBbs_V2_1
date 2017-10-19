@@ -71,13 +71,20 @@
 	<!-- </bean> -->
 	<bean id="saveDir" class="java.lang.String">
 		<constructor-arg value="d://uploadKch//" />
-	</bean>
+	</bean> 
 
 	<!-- Transaction Manager -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<!-- @Transactional을 인식시키기 위한 조치 -->
+	<!-- @Transactional을 인식시키기 위한 조치  -->
 	<tx:annotation-driven transaction-manager="transactionManager"/>
+<!-- 	우선순위는 메서드에 걸려있는 @Transactional이 높다. Bean은 후순위. 그렇기에 클래스에 @Transactional을 넣고 -->
+<!-- 	메서드에 @Transactional을 넣은뒤 세부조정을 하면 메서드에 걸린@Transactional이 먼저 실행된다. -->
+
+<!-- 	@Transactional는 프락시 서버가 인터페이스를 타겟으로 하여 동작하기 때문에 컨트롤러에 붙이면 원래는 동작하지 않는다.  -->
+<!-- 	그래서 Service딴에 @Transactional을 붙이는 것이 정석이다. -->
+<!-- 	컨트롤러에서 동작하게 하기 위해서는 proxy-target-class="true"라는 속성을 annotation-driven에 붙여야 한다.  -->
+<!-- 	근데...이상하게 안붙여도 컨트롤러에 붙여도 작동이 된다.(Spring 버전의 문제?) -->
 </beans>

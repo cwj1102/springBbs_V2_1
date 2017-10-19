@@ -41,7 +41,6 @@ public class BBSWriteImpl implements BBSWrite {
 		}
 		
 	}
-	
 	@Override
 	public void write1(BBSDto article, List<MultipartFile> mfile) {
 		// TODO Auto-generated method stub
@@ -52,6 +51,7 @@ public class BBSWriteImpl implements BBSWrite {
 			
 			article.setFileStatus((byte)1);
 			bbsdao.write1(article);
+			System.out.println(bbsdao.getTotalCount());
 			commonFileUpload(mfile, article.getArticleNum());
 		}
 	}
