@@ -35,7 +35,7 @@ public class ReplyImpl implements BBSReply {
 			article.setFileStatus((byte)1);
 			bbsdao.reply(article);
 //			bbsdao.write1(article);
-			bbswrite.commonFileUpload(mfile, article.getArticleNum());
+//			bbswrite.commonFileUpload(mfile, article.getArticleNum());
 		}
 	}
 

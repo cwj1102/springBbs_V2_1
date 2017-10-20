@@ -105,12 +105,15 @@ public class BBSController {
 	}
 */	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
 	@Transactional
-	public String write(BBSDto article, HttpSession session, @RequestPart("fileData") List<MultipartFile> mfile) {
+	public String write(BBSDto article, HttpSession session, 
+			String storedF) {
+		System.out.println("storedF = " + storedF);
 		article.setId((String)session.getAttribute("id"));
 		if(article.getContent().isEmpty() || article.getTitle().isEmpty()) {
 			return "writeForm";
 		}
-		bbswrite.write1(article,mfile);
+		bbswrite.write1(article,storedF);
+		
 		return "redirect://list.bbs?pageNum=1";
 	}
 	@RequestMapping(value="/download.bbs")

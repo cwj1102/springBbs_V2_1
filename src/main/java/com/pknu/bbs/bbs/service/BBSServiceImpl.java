@@ -24,6 +24,7 @@ import com.pknu.bbs.bbs.dao.BBSDao;
 import com.pknu.bbs.bbs.dto.BBSDto;
 import com.pknu.bbs.bbs.dto.UploadDto;
 import com.pknu.bbs.comment.dao.CommentDao;
+import com.pknu.bbs.upload.UploadFileUtils;
 
 @Service
 public class BBSServiceImpl implements BBSService {
@@ -144,7 +145,10 @@ public class BBSServiceImpl implements BBSService {
 	public void download(String storedFname, HttpServletResponse resp) {
 		UploadDto uploadDto = bbsDao.getDownloadStatus(storedFname);
 		try {
-			byte fileByte[] = FileUtils.readFileToByteArray(new File(saveDir + storedFname));
+
+			String storedPath = UploadFileUtils.calcPath(saveDir);
+			System.out.println(saveDir + storedPath + storedFname);
+			byte fileByte[] = FileUtils.readFileToByteArray(new File(saveDir + storedPath + storedFname));
 			resp.setContentType("application/octet-stream");
 			resp.setContentLength(fileByte.length);
 			resp.setHeader("Content-Disposition",
@@ -177,8 +181,11 @@ public class BBSServiceImpl implements BBSService {
 		}
 
 		resp.setHeader("Content-Disposition", "attachment;" + " filename=\"" + originFname + "\";");
-
-		FileSystemResource fsr = new FileSystemResource(saveDir + storedFname);
+		String storedPath = UploadFileUtils.calcPath(saveDir);
+		System.out.println(saveDir + storedPath + storedFname);
+		String x = storedPath.replace(File.separator, "/");
+		FileSystemResource fsr = new FileSystemResource(saveDir + x + "/" + storedFname);
+		System.out.println(saveDir + x + "/" + storedFname);
 		return fsr;
 	}
 

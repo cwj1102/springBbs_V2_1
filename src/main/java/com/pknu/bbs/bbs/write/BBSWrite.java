@@ -12,7 +12,9 @@ public interface BBSWrite {
 
 	void write(BBSDto article, MultipartHttpServletRequest mRequest);
 
-	void write1(BBSDto article, List<MultipartFile> mfile);
+//	void write1(BBSDto article, List<MultipartFile> mfile, String storedF);
+	void write1(BBSDto article, String storedF);
 	
-	void commonFileUpload(List<MultipartFile> mfile, int articleNum);
+	
+	void commonFileUpload(String storedF, int articleNum);
 }
