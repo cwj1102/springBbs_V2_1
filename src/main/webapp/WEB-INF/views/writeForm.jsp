@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<!DOCTYPE>
 <html>
 <head>
 <meta charset="utf-8">
@@ -41,7 +41,6 @@ small:hover {
 <body>
 <div class="col-md-3 col-sm-2"></div>
 <div class="col-md-6 col-sm-8">
-<center>
 <form action="/bbs/write.bbs" method="post"><!-- enctype="multipart/form-data"을 일시적으로 빼놓았다  -->
 <input type="hidden" name="pageNum" value="${pageNum}"/>
 <div class= "storedFilesClass"></div>
@@ -68,7 +67,6 @@ small:hover {
 	    </tr>		
 	</table>	
 </form>
-</center>
 </div>
 <script>
 function send(){
@@ -90,7 +88,7 @@ function send(){
 				files.push($(this).attr("data-src"));
 			});
 			$.ajax({
-				url : "/bbs/deleteAllFiles.upload",
+				url : "/bbs/deleteAllFiles.bbs",
 				type : "post",
 				data : {
 					files : files
@@ -126,7 +124,7 @@ function send(){
 						
 
 						$.ajax({
-								url : '/bbs/uploadAjax.upload',
+								url : '/bbs/uploadAjax.bbs',
 								data : formData,
 								// 			  복수개를 업로드시 
 								dataType : 'json',
@@ -149,22 +147,26 @@ function send(){
 											function(index,
 													fileName) {
 												if (checkImageType(fileName)) {
-													str = "<div><a href=displayFile.upload?fileName=" + getImageLink(fileName) + ">"//s_가 없는 파일
-															+ "<img src='displayFile.upload?fileName=" + fileName + "'/>"
+													str = "<div><a href=displayFile.bbs?fileName=" + getImageLink(fileName) + ">"//s_가 없는 파일
+															+ "<img src='displayFile.bbs?fileName=" + fileName + "'/>"
 															+ "</a><small class='human' data-src='"+fileName+"'>X</small></div>";
-													storedFiles.push(getImageLink(fileName));
-													storedFiles.push(fileName);
-													alert(storedFiles);
-													sf = '<input type="hidden" name="storedF" value="' + getImageLink(fileName) + '"/>'
-														+ '<input type="hidden" name="storedF" value="' + fileName + '"/>';
+// 													storedFiles.push(getImageLink(fileName));
+// 													storedFiles.push(fileName);
+// 													alert(storedFiles);
+													sf = '<input type="hidden" name="fileNames" value="' + getImageLink(fileName) + '"/>'
+// 														+ '<input type="hidden" name="fileNames" value="' + fileName + '"/>';
+
+//								 	 				 이미지 파일일 경우에는 이름에 s_ 가 포함되어있으므로 테이블에 바로 입력하면
+//								 	 				 다운로드시 썸네일 파일을 다운로드 받게됨...이름에 s_ 제거하고 테이블에 입력
+// 														  +"<input type='hidden' name='fileNames' value='"+getImageLink(fileName)+"'></div>";
 													
 												} else {
-													str = "<div><a href='displayFile.upload?fileName=" + fileName + "'>"
+													str = "<div><a href='displayFile.bbs?fileName=" + fileName + "'>"
 															+ getOriginalName(fileName) + "</a>"
 															+ "<small class='human' data-src='"+fileName+"'>X</small></div>";
 													storedFiles.push(fileName);
 													alert(storedFiles);
-													sf = '<input type="hidden" name="storedF" value="' + fileName + '"/>';
+													sf = '<input type="hidden" name="fileNames" value="' + fileName + '"/>';
 												
 												}
 													$(".uploadedList").append(str);
@@ -182,7 +184,7 @@ function send(){
 		$(".uploadedList").on("click", "small", function(event) {
 			let that = $(this);
 			$.ajax({
-				url : "/bbs/deleteFile.upload",
+				url : "/bbs/deleteFile.bbs",
 				type : "post",
 				data : {
 					fileName : $(this).attr("data-src")
@@ -225,7 +227,7 @@ function send(){
 				files.push($(this).attr("data-src"));
 			});
 			$.ajax({
-				url : "/bbs/deleteAllFiles.upload",
+				url : "/bbs/deleteAllFiles.bbs",
 				type : "post",
 				data : {
 					files : files

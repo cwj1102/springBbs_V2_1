@@ -1,4 +1,4 @@
-package com.pknu.bbs.upload;
+package com.pknu.bbs.bbs.util;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -46,7 +46,7 @@ public class UploadFileUtils {
 
 	private static String makeThumbnail(String saveDir, String storedPath, String storedFname) throws Exception {
 		BufferedImage sourceImg = ImageIO.read(new File(saveDir + storedPath, storedFname));
-
+		System.out.println("saveDir + storedPath, storedFname"+saveDir + storedPath + storedFname);
 		BufferedImage destImg = Scalr.resize(sourceImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 100);
 		String thumbnailName = saveDir + storedPath + File.separator + "s_" + storedFname;
 		File newFile = new File(thumbnailName);

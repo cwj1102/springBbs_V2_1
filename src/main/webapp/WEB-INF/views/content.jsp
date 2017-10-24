@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -133,9 +134,11 @@ ${pageNum }<br/>
 			<td colspan="2">다운로드 </td>
 			<td colspan="2">
 <%-- 			<a href="/bbs/download.bbs?fname=${article.fileStatus}">${article.fileStatus}</a></td> --%>
-   			<c:forEach var="uploadList" items="${uploadList}">
-<%-- 	  			<a href="/bbs/download.bbs?storedFname=${uploadList.storedFname}" target="_blank"><c:out value="${uploadList.originFname}"/><br/></a> --%>
-	  			<a href="/bbs/download.bbs?storedFname=${uploadList.storedFname}&originFname=${uploadList.originFname}&fileLength=${uploadList.fileLength}" target="_blank"><c:out value="${uploadList.originFname}"/><br/></a>
+   			<c:forEach var="storedFname" items="${uploadList}">
+<%-- 	  			<a href="/bbs/download.bbs?storedFname=${storedFname}" target="_blank"><c:out value="${storedFname}"/><br/></a> --%>
+<%-- 	  			<a href="/bbs/download.bbs?storedFname=${storedFname}&originFname=${storedFname.substring(storedFname.indexOf('_')+1)}" target="_blank"><c:out value="${storedFname.substring(storedFname.indexOf('_')+1)}"/><br/></a> --%>
+<!-- 	  			JSTL이용 -->
+	  			<a href="/bbs/download.bbs?storedFname=${storedFname}" target="_blank">${fn:substringAfter(storedFname,"_")}<br/></a>
 	  		</c:forEach>
 		 </tr>					
 		 <tr>			 
@@ -147,8 +150,8 @@ ${pageNum }<br/>
 	    	  <td colspan="4" align="right">	    	
 	    	  <input type="submit" value="답글달기">
 	    	  <c:if test="${id ==article.id}">
-	    	  <input type="button" value="수정하기" onclick="document.location.href='/bbs/update.bbs?articleNum=${article.articleNum}&pageNum=${pageNum}'">
-	    	  <input type="button" value="삭제하기" onclick="document.location.href='/bbs/delete.bbs?articleNum=${article.articleNum}&pageNum=${pageNum}'">
+	    	  <input type="button" value="수정하기" onclick="document.location.href='/bbs/update.bbs?articleNum=${article.articleNum}&pageNum=${pageNum}&fileStatus=${article.fileStatus}'">
+	    	  <input type="button" value="삭제하기" onclick="document.location.href='/bbs/delete.bbs?articleNum=${article.articleNum}&pageNum=${pageNum}&fileStatus=${article.fileStatus}'">
 	    	  </c:if>
 	    	  <c:if test="${id !=article.id}">
 	    	  <input type="button" value="수정하기" disabled="disabled">

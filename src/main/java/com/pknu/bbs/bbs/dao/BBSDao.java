@@ -1,12 +1,9 @@
 package com.pknu.bbs.bbs.dao;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.ServletException;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,24 +26,24 @@ public interface BBSDao {
 	
 	void delete(String articleNum) throws SQLException;
 	
-	BBSDto getUpdateArticle(String articleNum) throws SQLException;
+	BBSDto getUpdateArticle(String articleNum);
 	
-	void updateArticle(HashMap<Object,Object> paramMap) throws SQLException;
+	void updateArticle(BBSDto article);
 	
 	String loginCheck(String id) throws SQLException;
 
 
 	String joinCheck(String id);
 
-	void posUpdate(HashMap<Object, Object> paramMap);
+//	void posUpdate(HashMap<Object, Object> paramMap);
 
 	void reply(BBSDto article);
 	
 	int commentsCount(int articleNum);
 
-	void writeUpload(HashMap hm);
+//	void writeUpload(HashMap hm);
 
-	List<UploadDto> getFileStatus(String articleNum);
+	List<String> getFileStatus(String articleNum);
 
 	UploadDto getDownloadStatus(String fname);
 	/*@Transactional
@@ -55,7 +52,10 @@ public interface BBSDao {
 	int getNextArticleNum();
 
 	void insertFile(UploadDto uploadDto);
+	
+	public List<String> getStoredFnames(int articleNum);
+//	void write1(BBSDto article);
 
-	void write1(BBSDto article);
+	void dbDelFileName(ArrayList<String> delFileList);
 
 }

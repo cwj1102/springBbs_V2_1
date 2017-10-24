@@ -1,4 +1,4 @@
-package com.pknu.bbs.upload;
+package com.pknu.bbs.bbs.util;
 
 import java.util.HashMap;
 import java.util.Map;

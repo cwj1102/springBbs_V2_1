@@ -1,4 +1,4 @@
-package com.pknu.bbs.bbs.common;
+package com.pknu.bbs.bbs.util;
 
 import java.io.File;
 import java.io.IOException;

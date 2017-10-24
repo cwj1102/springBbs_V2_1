@@ -1,5 +1,7 @@
 package com.pknu.bbs.bbs.dto;
 
+import java.util.List;
+
 /**
  * @author hjhj
  *
@@ -15,6 +17,13 @@ public class BBSDto {
 	private String writeDate;
 	private byte fileStatus;
 	private long commentCount;
+	private List<String> fileNames;	
+	public List<String> getFileNames() {
+		return fileNames;
+	}
+	public void setFileNames(List<String> fileNames) {
+		this.fileNames = fileNames;
+	}
 	public int getArticleNum() {
 		return articleNum;
 	}
@@ -79,7 +88,7 @@ public class BBSDto {
 	public String toString() {
 		return "BBSDto [articleNum=" + articleNum + ", id=" + id + ", title=" + title + ", content=" + content
 				+ ", depth=" + depth + ", hit=" + hit + ", groupId=" + groupId + ", writeDate=" + writeDate
-				+ ", fileStatus=" + fileStatus + ", commentCount=" + commentCount + "]";
+				+ ", fileStatus=" + fileStatus + ", commentCount=" + commentCount + ", fileNames=" + fileNames + "]";
 	}
 	
 }

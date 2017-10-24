@@ -1,4 +1,4 @@
-package com.pknu.bbs.upload;
+package com.pknu.bbs.bbs.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,9 +20,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.pknu.bbs.bbs.util.MediaUtils;
+import com.pknu.bbs.bbs.util.UploadFileUtils;
 
 @Controller
 public class UploadController {
@@ -62,18 +65,17 @@ public class UploadController {
 	//
 	// ResponseEntity를 사용하지 않을때
 	@ResponseBody
-	@RequestMapping(value = "/uploadAjax.upload", method = RequestMethod.POST)
-	public List<String> uploadAjax(MultipartHttpServletRequest mRequest) throws Exception {
+	@RequestMapping(value = "/uploadAjax.bbs", method = RequestMethod.POST)
+	public List<String> uploadAjax(@RequestPart("multiFile") List<MultipartFile> multiFile) throws Exception {
 		List<String> fileList = new ArrayList<>();
-		List<MultipartFile> mfile = mRequest.getFiles("multiFile");
-		for (MultipartFile file : mfile) {
+		for (MultipartFile file : multiFile) {
 			fileList.add(UploadFileUtils.uploadFile(saveDir, file.getOriginalFilename(), file.getBytes()));
 		}
 		return fileList;
 	}
 
 	@ResponseBody
-	@RequestMapping("/displayFile.upload")//다운로드
+	@RequestMapping("/displayFile.bbs")//다운로드
 	public ResponseEntity<byte[]> displayFile(String fileName) throws Exception {
 		InputStream in = null;
 		ResponseEntity<byte[]> entity = null;
@@ -105,7 +107,7 @@ public class UploadController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/deleteFile.upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteFile.bbs", method = RequestMethod.POST)
 	public ResponseEntity<String> deleteFile(String fileName) {
 		logger.info("delete file: " + fileName);
 		String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -122,7 +124,7 @@ public class UploadController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/deleteAllFiles.upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteAllFiles.bbs", method = RequestMethod.POST)
 	// ajax() 함수가 배열을 직렬화 하지 않고 보낼때는 아래 코드처럼 해도 처리됨
 	// public ResponseEntity<String> deleteFile(@RequestParam("files[]") String[] files) {
 	public ResponseEntity<String> deleteFile(@RequestParam("files") String[] files) {

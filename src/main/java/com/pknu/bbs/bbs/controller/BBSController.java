@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -105,24 +104,20 @@ public class BBSController {
 	}
 */	@RequestMapping(value="/write.bbs", method=RequestMethod.POST)
 	@Transactional
-	public String write(BBSDto article, HttpSession session, 
-			String storedF) {
-		System.out.println("storedF = " + storedF);
+	public String write(BBSDto article, HttpSession session) {
 		article.setId((String)session.getAttribute("id"));
 		if(article.getContent().isEmpty() || article.getTitle().isEmpty()) {
 			return "writeForm";
 		}
-		bbswrite.write1(article,storedF);
+		bbswrite.write(article);
 		
 		return "redirect://list.bbs?pageNum=1";
 	}
 	@RequestMapping(value="/download.bbs")
 	@ResponseBody
 	public FileSystemResource download(@RequestParam String storedFname, 
-									@RequestParam String originFname, 
-									@RequestParam int fileLength, 
 									HttpServletResponse resp) {
-		return bbsService.download(resp, storedFname, originFname, fileLength);
+		return bbsService.download(resp, storedFname);
 	}
 	
 	
@@ -140,9 +135,10 @@ public class BBSController {
 		return "content";
 	}
 	@RequestMapping(value="/delete.bbs")
-	public String delete(String articleNum,String pageNum) {
+	public String delete(String articleNum,String pageNum, int fileStatus) {
 			try {
-				bbsService.delete(articleNum);
+				System.out.println("delete : fileStatus = " + fileStatus);
+				bbsService.delete(articleNum, fileStatus);
 			} catch (ServletException | IOException e) {
 				e.printStackTrace();
 			}
@@ -151,11 +147,14 @@ public class BBSController {
 	}
 	
 	@RequestMapping(value="/update.bbs", method=RequestMethod.GET)
-	public String updateForm(@ModelAttribute("articleNum") String articleNum, @ModelAttribute("pageNum") String pageNum, Model model) {
+	public String updateForm(@ModelAttribute("articleNum") String articleNum, 
+			@ModelAttribute("pageNum") String pageNum, 
+			@ModelAttribute("fileStatus") int fileStatus,
+			Model model) {
 //		model.addAttribute("articleNum", articleNum);
 //		model.addAttribute("pageNum", pageNum);
 		try {
-			bbsService.updateForm(articleNum, model);
+			bbsService.updateForm(articleNum, fileStatus, model);
 		} catch (ServletException | IOException e) {
 			e.printStackTrace();
 		}
@@ -163,13 +162,39 @@ public class BBSController {
 	}
 	
 	@RequestMapping(value="/update.bbs", method=RequestMethod.POST)
-	public String update(Model model, String pageNum, String articleNum, String title, String content) {
-		try {
-			bbsService.update(model, articleNum, title, content);
+//	아래와 같이 사용시에는 오류가 남
+//	ArrayList<String> storedFnameList, ..set,get 메소드가 없음
+//	UpdateDto를 만들어서 set,get 메소드를 사용해야지
+//	jsp에서 복수개의 name 속성을 가지는 파라미터를 받을 수 있음 
+	public String update(
+			BBSDto article, 
+//			UpdateDto updateDto,
+//			@RequestParam을 넣으면 값이 반드시 넘어와야 한다.
+			String[] deleteFileNames,
+			String pageNum, 
+			Model model, 
+			int fileCount
+			) {
+		if(article.getFileNames()!=null) {
+			for(String storedFname : article.getFileNames()) {
+				System.err.println("article.getFileNames() : " + storedFname);
+			}
+		}
+		bbsService.update(article, deleteFileNames, model, fileCount);
+		/*for(String storedFname : storedFnameList) {
+			System.out.println("StringList[] : " + storedFname);
+			
+		}*/
+		/*for(String storedFname : updateDto.getStoredFnameList()) {
+			System.out.println("updateDto : " + storedFname);
+		}*/
+		
+		/*try {
+//			bbsService.update(model, articleNum, title, content);
 		} catch (ServletException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		return "redirect:list.bbs?pageNum="+pageNum;
 	}
 	

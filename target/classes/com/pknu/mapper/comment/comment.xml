@@ -9,7 +9,7 @@
     </select> -->
     
     <insert id="insertComment" parameterType="comment">
-    	insert into comments1 values(comment1_seq.nextval,#{id},#{commentContent},sysdate,#{articleNum})
+    	insert into comments2 values(comment2_seq.nextval,#{id},#{commentContent},sysdate,#{articleNum})
     </insert>
     
     
@@ -22,7 +22,7 @@
 			  order by rum) ocom 
 		where rum between 1 and #{commentRow} --> 
 		select * 
-		from (select * from comments1  
+		from (select * from comments2  
 			  where articleNum = #{articleNum} 
 			  order by commentNum desc) 
 		where rownum between 1 and #{commentRow}
