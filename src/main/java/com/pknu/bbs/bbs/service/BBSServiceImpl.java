@@ -218,7 +218,8 @@ public class BBSServiceImpl implements BBSService {
 				String front = deleteFname.substring(0, 12);
 				String end = deleteFname.substring(12);
 				System.out.println("saveDir + front + \"s_\" + end" + saveDir + front + "s_" + end);
-				new File(saveDir + front + "s_" + end).delete();
+				new File((saveDir + front + "s_" + end).replace('/', File.separatorChar)).delete();
+				System.out.println((saveDir + front + "s_" + end).replace('/', File.separatorChar));
 			}
 		}
 		
