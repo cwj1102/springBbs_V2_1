@@ -175,7 +175,8 @@ public class BBSServiceImpl implements BBSService {
 //				Mybatis 매퍼 파일은 List만 받을 수 있음(String 배열은 받을 수 없다)
 				delFileList.add(delFileName);
 			}
-			bbsDao.dbDelFileName(delFileList);
+//			bbsDao.dbDelFileName(delFileList);
+			bbsDao.dbDelFileName1(deleteFileNames);
 			for(String deleteFname : deleteFileNames) {
 				storageDelFileName(deleteFname);
 			}

@@ -28,11 +28,19 @@
 		,#{id},#{title},#{content},0,0,0,sysdate,#{fileStatus}
 		)
 	</insert> -->
-	<delete id="dbDelFileName" parameterType="List">
+<!-- 	<delete id="dbDelFileName" parameterType="List"> -->
+<!-- 		delete -->
+<!-- 		from filelist2 -->
+<!-- 		where storedFname IN -->
+<!-- 		<foreach collection="list" item="storedFname" open="(" separator="," close=")"> -->
+<!-- 			#{storedFname} -->
+<!-- 		</foreach> -->
+<!-- 	</delete> -->
+	<delete id="dbDelFileName1" parameterType="List">
 		delete
 		from filelist2
 		where storedFname IN
-		<foreach collection="list" item="storedFname" open="(" separator="," close=")">
+		<foreach collection="array" item="storedFname" open="(" separator="," close=")">
 			#{storedFname}
 		</foreach>
 	</delete>

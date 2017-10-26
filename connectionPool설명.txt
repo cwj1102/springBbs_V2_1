@@ -1,0 +1,16 @@
+	ds = new BasicDataSource();
+	
+	//사용하지 않고 커넥션 풀에 저장될 수 있는 최대 커넥션 수(기본값 : 8, -1인 경우 무제한)
+	ds.setMaxIdle(10);
+	//사용하지 않고 커넥션 풀에 저장될 수 있는 최소 커넥션 수
+	ds.setMinIdle(10);
+	//남아있는 커넥션이 없는 경우 대기할 수 있는 시간(-1인 경우 무제한)
+	ds.setMaxWait(-1);
+	//최대 커넥션이 수 (-1인 경우 무제한)
+	ds.setMaxTotal(-1);
+	//IDLE 상태인 커넥션이 유효한지 검사
+	df.setTestWhileIdle(true);
+	//IDLE 상태인 커넥션이 유효한지 검사하는 주기
+	ds.setTimeBetweenEvictionRunsMillis(600000);
+	//IDLE 상태인 커넥션이 유효한지 검사할때 사용할 Query
+	ds.setValidationQuery("SELECT 1 FROM DUAL");

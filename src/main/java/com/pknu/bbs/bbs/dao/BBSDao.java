@@ -57,5 +57,6 @@ public interface BBSDao {
 //	void write1(BBSDto article);
 
 	void dbDelFileName(ArrayList<String> delFileList);
+	void dbDelFileName1(String[] delFileList);
 
 }

@@ -5,8 +5,10 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
@@ -17,13 +19,46 @@
 		<!-- classpath:는 src/main/resources위치를 찾는다 -->
 	</bean>
 
-	<bean id="dataSource"
+<!-- 	BasicDataSource를 이용하여 직접 커넥션 풀 생성 -->
+<!-- 	이 경우에는 log4sql때문에 에러가 남...해결책은 commons.apache.org에서 -->
+<!-- 	두개의 파일을 받아서 사용하면 됨 -->
+	<bean id="dataSource" class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="maxIdle" value="8"/>
+		<property name="minIdle" value="4"/>
+		<property name="maxTotal" value="4"/>
+		<property name="initialSize" value="10"/>
+		<property name="maxWaitMillis" >
+			<value>-1</value>
+		</property>
+	</bean>		
+<!-- 	DriverManagerDataSource는 커넥션 풀을 지원안함 -->
+<!-- 	개발시에는 DriverManagerDataSource를 사용해서 개발하고 개발이 끝나고 -->
+<!-- 	운영환경에서는 커넥션 풀을  지원하는 클래스로 대체-->
+
+<!-- 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${driverClassName}" />
 		<property name="url" value="${url}" />
 		<property name="username" value="${username}" />
 		<property name="password" value="${password}" />
-	</bean>
+	</bean> -->
+	
+<!--  	JNDI를 이용해서 커넥션 풀 사용  -->
+<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!--	<property name="jndiName" value="java:/comp/env/pknu"/>	-->
+<!--	resourceRef를 true로 설정하면 java:/comp/env/를 안붙여도 디폴트로 인식함	-->
+<!-- <property name="jndiName" value="pknu"/>
+<property name="resourceRef" value="true"/>
+</bean> -->
+<!-- 
+<jee:jndi-lookup jndi-name="pknu" id="dataSource" resource-ref="true">
+</jee:jndi-lookup>
+
+ -->
 
 <!-- 	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource"> -->
 <!-- 		<constructor-arg ref="dataSourceSpied" /> -->

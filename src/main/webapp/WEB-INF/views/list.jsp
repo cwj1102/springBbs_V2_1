@@ -149,12 +149,18 @@ h1 div{
     <td align="center"  width="50">${article.hit}</td>
   </tr>
   </c:forEach>
+  
   <tr>	  
       <td colspan="5" align="center" height="40">	 
 	  ${pageCode}
 	  </td>
   </tr>
 </table>
+<a href="/bbs/resources/compressed.tracemonkey-pldi-09.pdf"><img src="/bbs/resources/ceo.jpg">
+</a>
+<!-- <iframe style="float:right;" src = "/bbs/resources/ViewerJS/index.html?file=#../compressed.tracemonkey-pldi-09.pdf" width='400' height='300' allowfullscreen webkitallowfullscreen></iframe> -->
+<iframe style="float:right;" src = "/bbs/resources/ViewerJS/index.html?file=#/bbs/resources/compressed.tracemonkey-pldi-09.pdf" width='400' height='300' allowfullscreen webkitallowfullscreen></iframe>
+<!-- <iframe style="float:right;" src = "/bbs/resources/ViewerJS/index.html?file=#d://temp/compressed.tracemonkey-pldi-09.pdf" width='400' height='300' allowfullscreen webkitallowfullscreen></iframe> -->
 </div>
 </div>
 <!-- <script src="/webjars/bootstrap/3.3.7/dist/js/bootstrap.min.js"></script> -->
